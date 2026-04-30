@@ -4,9 +4,10 @@ import UserRoute from './Routes/user.route.js'
 
 
 
+
 const app = express()
-cookie()
 app.use(express.json())
+app.use(cookie())
 app.use('/api/auth',UserRoute)
 
 

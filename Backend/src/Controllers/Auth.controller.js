@@ -83,3 +83,56 @@ export async function verifyemail(req,res){
 
    res.send(html);
 }
+export async function login(req,res){
+  const { email , password} = req.body
+
+ const user  = await usermodel.findOne({
+    $or:[{email},{password}]
+ })
+
+ if(!user){
+    return res.status(400).json({
+        msg:"invalid creditnals",
+        sucess:false,
+        err:"email or pass incorrrect"
+    })
+ }
+
+ const ispassmatch = await user.comparepassword(password)
+
+  if(!ispassmatch){
+    return res.status(400).json({
+        msg:"invalid creditnals",
+        sucess:false,
+        err:"email or pass incorrrect"
+    })
+ }
+
+
+ if(!user.verify){
+     return res.status(400).json({
+        msg:"please verify by email or check your mail-box "
+     })
+ }
+   
+
+ const token = jwt.sign({
+    id:user._id,
+    username:user.username
+ },process.env.JWT)
+
+ res.cookie('token',token)
+
+ res.status(200).json({
+    msg:"login sucess",
+    user:user
+ })
+
+
+
+
+
+}
+export async function getme(req,res){
+
+}
