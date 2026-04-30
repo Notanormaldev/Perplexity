@@ -52,8 +52,13 @@ export async function register(req,res){
 }
 export async function verifyemail(req,res){
     const token = req.query.token
-    
+    if(!token){
+        return res.status(404).json({
+            msg:"empty token"
+        })
+    }
 
+    try {
     const decoded = jwt.verify(token,process.env.JWT)
 
 
@@ -62,7 +67,7 @@ export async function verifyemail(req,res){
 
     if(!user){
        return res.status(404).json({
-        msg:"invalid token",
+        msg:"user not eixst",
         sucess:false,
         err:'user not exist'
        })
@@ -81,13 +86,18 @@ export async function verifyemail(req,res){
     `
 
 
-   res.send(html);
+      return res.send(html);
+    } catch (error) {
+        return res.status(409).json({
+            msg:"verify email failed",error
+        })
+    }
 }
 export async function login(req,res){
   const { email , password} = req.body
 
  const user  = await usermodel.findOne({
-    $or:[{email},{password}]
+    $or:[{email}]
  })
 
  if(!user){
@@ -134,5 +144,14 @@ export async function login(req,res){
 
 }
 export async function getme(req,res){
+   const decoded = req.user
+   console.log(decoded);
+   
 
+   const user = await usermodel.findById(decoded.id)
+
+   return res.status(200).json({
+    msg:"getme",
+    user:user
+   })
 }
