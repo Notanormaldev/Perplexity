@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer'
 
-
 const trasnpoter = nodemailer.createTransport({
     service:"gmail",
     auth:{
