@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useauth } from '../hook/useauth'
 
 function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' })
@@ -8,13 +9,20 @@ function Login() {
     const { name, value } = event.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
+  
+  const navigate=useNavigate()
 
-  const handleSubmit = (event) => {
+  const {handlelogin}=useauth()
+  async function handleSubmit(event) {
     event.preventDefault()
-    console.log('Login data:', formData.email)
+  await handlelogin(formData)
+  navigate('/')
+
+    
+    // console.log('Login data:', formData.email)
     
    
-    // Add your login submit logic here
+  
   }
 
   return (

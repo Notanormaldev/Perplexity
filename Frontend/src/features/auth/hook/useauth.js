@@ -12,7 +12,7 @@ export  function useauth(){
     async function handleregister({email,username,password}){
         try {
             dispatch(setloading(true))
-            const data = register({email,username,password})
+            const data =await register({email,username,password})
         } catch (error) {
             dispatch(seterror(error.response?.data?.message || "Register failed"))
         }finally{
@@ -21,9 +21,12 @@ export  function useauth(){
         
    }
     async function handlelogin({email,password}){
+     
+        console.log(email,password);
+        
         try {
             dispatch(setloading(true))
-            const data = login({email,password})
+            const data =await login({email,password})
             dispatch(setuser(data.user))
         } catch (error) {
             dispatch(seterror(error.response?.data?.message || "Login failed"))
@@ -35,7 +38,7 @@ export  function useauth(){
     async function handlegetme(){
         try {
             dispatch(setloading(true))
-            const data = getme()
+            const data =await getme()
         } catch (error) {
             dispatch(seterror(error.response?.data?.message || "get-me failed"))
         }finally{
@@ -44,7 +47,7 @@ export  function useauth(){
         
    }
 
-   return ({handlegetme,handlelogin,handleregister})
+   return {handlegetme,handlelogin,handleregister}
 
 
 }

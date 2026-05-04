@@ -9,9 +9,13 @@ const api = axios.create({
 
 
 export async function login({email,password}){
+    console.log(email,password);
+    
     const res = await api.post('api/auth/login',{email,password})
-    return res.data
+    console.log(res);
+    return res.data 
 }
+
 export async function register({email,username,password}){
     const res = await api.post('api/auth/register',{
         email,username,password
