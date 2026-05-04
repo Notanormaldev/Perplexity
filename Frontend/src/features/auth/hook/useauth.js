@@ -39,6 +39,7 @@ export  function useauth(){
         try {
             dispatch(setloading(true))
             const data =await getme()
+            dispatch(setuser(data.user))
         } catch (error) {
             dispatch(seterror(error.response?.data?.message || "get-me failed"))
         }finally{

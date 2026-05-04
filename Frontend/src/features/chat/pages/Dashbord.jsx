@@ -6,9 +6,9 @@ import { useSelector } from 'react-redux'
 
 
 
-function dashbord() {
+function Dashbord() {
 
-  const user = useSelector(state=>state.auth.user)
+  const {user} = useSelector(state=>state.auth)
 
   console.log(user)
   return (
@@ -18,4 +18,4 @@ function dashbord() {
   )
 }
 
-export default dashbord
+export default Dashbord

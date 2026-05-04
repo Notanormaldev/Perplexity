@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { Navigate, NavLink, useNavigate } from 'react-router-dom'
 import { useauth } from '../hook/useauth'
+import { useSelector } from 'react-redux'
 
 function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' })
+  const {user,loading} = useSelector(state=>state.auth)
 
+ 
   const handleChange = (event) => {
     const { name, value } = event.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -24,6 +27,10 @@ function Login() {
    
   
   }
+  if(user && !loading ){
+  return  <Navigate to='/'/>
+ }
+
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center px-4 py-10">
