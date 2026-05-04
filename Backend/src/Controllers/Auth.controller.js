@@ -6,13 +6,13 @@ export async function register(req,res){
 
     const {username,email,password} = req.body
 
-
     const isuserlareadyexist  = await usermodel.findOne({
         $or:[
             {email},{username}
         ]
     })
 
+    
     if(isuserlareadyexist){
         return res.status(403).json({
             msg:"already exist",
@@ -121,7 +121,7 @@ export async function login(req,res){
 
  if(!user.verify){
      return res.status(400).json({
-        msg:"please verify by email or check your mail-box "
+        msg:"please verify by email or check your mail-box"
      })
  }
    
@@ -145,7 +145,7 @@ export async function login(req,res){
 }
 export async function getme(req,res){
    const decoded = req.user
-   console.log(decoded);
+//    console.log(decoded);
    
 
    const user = await usermodel.findById(decoded.id)
