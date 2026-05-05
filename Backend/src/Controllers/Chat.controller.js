@@ -38,5 +38,17 @@ export async function messageandres(req,res){
 
 
 export async function getchat(req,res){
-    
+    const user = req.user
+
+    const chat = await chatmodel.find({user:user.id})
+
+    res.status(200).json({
+        msg:"chats get sucessfully",
+        chats
+    })
+}
+
+
+export async function getmessage(req,res){
+    const use
 }
