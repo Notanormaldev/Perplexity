@@ -21,5 +21,6 @@ const messageschema = mongoose.Schema({
     timestamps:true
 })
 
-const messagemodel = mongoose.model('me')
+const messagemodel = mongoose.model('messages',messageschema)
+export default messagemodel
 
