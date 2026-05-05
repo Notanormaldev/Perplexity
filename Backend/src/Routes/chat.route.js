@@ -6,6 +6,6 @@ import { getchat, messageandres } from "../Controllers/Chat.controller.js";
 
 const chatRouter  = Router()
 chatRouter.post('/message',authuser,messageandres)
-chatRouter.get('/',authuser,getchat)
-
+chatRouter.get('/',authuser,getchats)
+chatRouter.get('/messages/:chatid',authuser)
 export default chatRouter;

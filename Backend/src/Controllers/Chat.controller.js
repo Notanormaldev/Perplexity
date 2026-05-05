@@ -37,10 +37,10 @@ export async function messageandres(req,res){
 }
 
 
-export async function getchat(req,res){
+export async function getchats(req,res){
     const user = req.user
 
-    const chat = await chatmodel.find({user:user.id})
+    const chats = await chatmodel.find({user:user.id})
 
     res.status(200).json({
         msg:"chats get sucessfully",
@@ -49,6 +49,24 @@ export async function getchat(req,res){
 }
 
 
-export async function getmessage(req,res){
-    const use
+export async function getmessages(req,res){
+    const {chatid}=req.params
+   
+    const chat = await chatmodel.findOne({
+        _id:chatid,
+        user:req.user.id
+    })
+
+    if(!chat){
+        return res.status(404).json({
+            msg:"chat not found"
+        })
+    }
+
+    const messages = await messagemodel.find({chat:chatid})
+
+    return res.status(200).json({
+        msg:"Message get sucessfully",
+        messages
+    })
 }
