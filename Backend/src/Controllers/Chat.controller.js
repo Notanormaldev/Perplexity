@@ -6,22 +6,20 @@ export async function messageandres(req,res){
     const {message,chatid} = req.body
 
   let chat =null,title =null;
-      if(!chatid){
-        title = await generateChatTitle(message)
-        chat =await chatmodel.create({
-      user:req.user.id,
-      title:title
+    if(!chatid){
+    title = await generateChatTitle(message)
+    chat =await chatmodel.create({
+    user:req.user.id,
+    title:title
      })
 }
- 
-
     const usermessage =await messagemodel.create({
-      chat:chatid || chat._id,
-      content:message,
-      role:'user'
+    chat:chatid || chat._id,
+    content:message,
+    role:'user'
    })
-   const messages = await messagemodel.find({chat:chatid})
-   console.log(messages);
+   const messages = await messagemodel.find({chat:chatid || chat._id})
+   //    console.log(messages);
    
    const result = await generateMessage(messages)
   
@@ -31,13 +29,14 @@ export async function messageandres(req,res){
     role:"ai"
    })
     
-  
-    
-//     res.status(201).json({
-//        chat,
-//        usermessage,
-//        aimessage
-        
-//     })
+    res.status(201).json({
+       messages,
+       aimessage
+    })
 
+}
+
+
+export async function getchat(req,res){
+    
 }
