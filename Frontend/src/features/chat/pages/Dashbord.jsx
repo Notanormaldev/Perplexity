@@ -22,7 +22,7 @@ function Dashbord() {
   },[])
   console.log(user)
   return (
-    <div>
+    <div className='h-screen w-full bg-neutral-900 text-white'>
       dashbord
     </div>
   )

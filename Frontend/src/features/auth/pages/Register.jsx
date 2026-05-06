@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { useauth } from '../hook/useauth'
+
+import { useauth } from '../hook/useauth.js'
+import Bg from '../components/Bg.jsx'
 
 function Register() {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' })
@@ -23,8 +25,13 @@ async function handleSubmit (event) {
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center px-4 py-10">
+      <Bg/>
+      <h1 className='text-white absolute left-1 top-1 font-bold font-stretch-50% text-3xl mask-b-from-neutral-50 font-family:'><i class="ri-ancient-gate-line"></i>  ZErio Ai</h1>
       <div className="w-full max-w-md">
-        <div className="rounded-[32px] border border-slate-800 bg-slate-900/95 p-8 shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
+        <div className="rounded-[32px] border border-slate-800 bg-black-900/95 p-8 shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
+         <div className='font-extrabold mb-5 font-stretch-50% text-2xl  mask-b-from-neutral-50 w-[30%] m-auto'>
+         <i class="ri-ancient-gate-line "></i> Z. Ai
+       </div>
           <div className="mb-8 flex items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-semibold tracking-tight">Create account</h1>

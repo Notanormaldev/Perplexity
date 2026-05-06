@@ -1,0 +1,14 @@
+.citymap-root {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #000;
+}
+ 
+.citymap-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+ 
