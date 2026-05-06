@@ -46,7 +46,7 @@ function Login() {
           <div className="mb-8 flex items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-semibold tracking-tight">Sign in</h1>
-              <p className="mt-2 text-sm text-slate-400">Use your account email and password.</p>
+              <p className="mt-2 text-sm text-slate-100">Use your account email and password.</p>
             </div>
             <nav className="flex gap-2">
               <NavLink

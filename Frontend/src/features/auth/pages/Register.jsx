@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { Navigate, NavLink, useNavigate } from 'react-router-dom'
 
 import { useauth } from '../hook/useauth.js'
 import Bg from '../components/Bg.jsx'
+import { useSelector } from 'react-redux'
 
 function Register() {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' })
+
+   const {user,loading} = useSelector(state=>state.auth)
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -22,6 +25,9 @@ async function handleSubmit (event) {
     // console.log('Register data:', formData)
   
   }
+    if(user && !loading ){
+  return  <Navigate to='/'/>
+ }
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center px-4 py-10">
