@@ -29,11 +29,21 @@ export async function getchats(){
 
 export async function getmessages({chatid}){
     try {
-        const res = await api.get('/api/chats/messages/'+chatid)
+        const res = await api.get(`/api/chats/messages/${chatid}`)
         return res.data
     } catch (error) {
         console.log(error);
         
     }
 
+}
+
+export async function deletechat({chatid}){
+    try {
+        const res = api.delete(`/api/chats/delete/${chatid}`)
+        return res.data
+    } catch (error) {
+        console.log(error);
+        
+    }
 }

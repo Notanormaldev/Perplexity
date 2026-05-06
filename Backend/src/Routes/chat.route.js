@@ -8,7 +8,7 @@ const chatRouter  = Router()
 chatRouter.post('/message',authuser,messageandres)
 chatRouter.get('/',authuser,getchats)
 chatRouter.get('/messages/:chatid',authuser,getmessages)
-chatRouter.post('/delete/:chatid',authuser,deletechat)
+chatRouter.delete('/delete/:chatid',authuser,deletechat)
 
 
 
