@@ -24,7 +24,12 @@ const  chatSlice  = createSlice({
         },
         addNewmessage:(state,action)=>{
           const {chatid,content,role}  =action.payload
-          state.chats[chatid].messages.push({content,role})
+          if(state.chats[chatid]) {
+            state.chats[chatid].messages.push({content,role})
+            state.chats[chatid].lastUpdated = new Date().toISOString()
+          } else {
+            console.error(`Chat ${chatid} not found`)
+          }
         },
         setchats:(state,action)=>{
             state.chats = action.payload

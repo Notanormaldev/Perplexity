@@ -1,48 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { usechat } from '../hook/usechat'
+import { setcurrentchatid, setchats } from '../chat.slice'
+import { deletechat } from '../services/chat.api'
 import 'remixicon/fonts/remixicon.css'
-
-// Demo chat data
-const DEMO_CHATS = [
-  {
-    id: 1,
-    title: 'House blueprint analysis',
-    date: new Date(Date.now()),
-    messages: [
-      { id: 1, role: 'user', content: 'Can you analyze this house blueprint?', timestamp: new Date() },
-      { id: 2, role: 'ai', content: 'I\'d be happy to analyze the blueprint. Please share the image or details.', timestamp: new Date() }
-    ]
-  },
-  {
-    id: 2,
-    title: 'Material cost estimate',
-    date: new Date(Date.now()),
-    messages: [
-      { id: 1, role: 'user', content: 'What\'s the estimated cost?', timestamp: new Date() },
-      { id: 2, role: 'ai', content: 'Based on current market prices...', timestamp: new Date() }
-    ]
-  },
-  {
-    id: 3,
-    title: 'Supplier search Mumbai',
-    date: new Date(Date.now() - 86400000),
-    messages: []
-  },
-  {
-    id: 4,
-    title: 'Foundation calculations',
-    date: new Date(Date.now() - 3 * 86400000),
-    messages: []
-  },
-  {
-    id: 5,
-    title: 'Interior design options',
-    date: new Date(Date.now() - 3 * 86400000),
-    messages: []
-  }
-]
-
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 // Logo with fade effect
 const LogoIcon = ({ size = 24, withFade = false }) => {
   return (
@@ -58,13 +21,18 @@ const LogoIcon = ({ size = 24, withFade = false }) => {
 }
 
 // Sidebar Component
-const Sidebar = ({ chats, selectedChat, onSelectChat, onDeleteChat, onNewChat }) => {
+const Sidebar = ({ chats, selectedChatId, onSelectChat, onDeleteChat, onNewChat }) => {
   const [searchTerm, setSearchTerm] = useState('')
+  const dispatch = useDispatch()
+  const { user } = useSelector(state => state.auth)
   
-  const groupChatsByDate = (chats, searchTerm) => {
-    let filtered = chats
+  const groupChatsByDate = (chatsObj, searchTerm) => {
+    // Convert chats object to array
+    const chatsArray = Object.values(chatsObj)
+    
+    let filtered = chatsArray
     if (searchTerm) {
-      filtered = chats.filter(c => c.title.toLowerCase().includes(searchTerm.toLowerCase()))
+      filtered = chatsArray.filter(c => c.title.toLowerCase().includes(searchTerm.toLowerCase()))
     }
 
     const now = new Date()
@@ -79,8 +47,11 @@ const Sidebar = ({ chats, selectedChat, onSelectChat, onDeleteChat, onNewChat })
     }
 
     filtered.forEach(chat => {
-      const chatDate = new Date(chat.date.getFullYear(), chat.date.getMonth(), chat.date.getDate())
-      const diff = Math.floor((today - chatDate) / (1000 * 60 * 60 * 24))
+      // Get the date from lastUpdated or use current date
+      const chatDateStr = chat.lastUpdated
+      const chatDate = chatDateStr ? new Date(chatDateStr) : new Date()
+      const chatDateOnly = new Date(chatDate.getFullYear(), chatDate.getMonth(), chatDate.getDate())
+      const diff = Math.floor((today - chatDateOnly) / (1000 * 60 * 60 * 24))
       
       if (diff === 0) groups.today.push(chat)
       else if (diff === 1) groups.yesterday.push(chat)
@@ -96,11 +67,11 @@ const Sidebar = ({ chats, selectedChat, onSelectChat, onDeleteChat, onNewChat })
 
   const ChatRow = ({ chat }) => {
     const [showMenu, setShowMenu] = useState(false)
-    const isSelected = selectedChat?.id === chat.id
+    const isSelected = selectedChatId === chat.id
 
     return (
       <div
-        onClick={() => onSelectChat(chat)}
+        onClick={() => onSelectChat(chat.id)}
         className={`px-3 py-2 rounded mb-2 cursor-pointer transition-colors group relative ${
           isSelected ? 'bg-zinc-800' : 'hover:bg-zinc-900'
         }`}
@@ -195,7 +166,7 @@ const Sidebar = ({ chats, selectedChat, onSelectChat, onDeleteChat, onNewChat })
         <GroupSection label="7 days ago" chats={groups['7daysAgo']} />
         <GroupSection label="Last 30 days" chats={groups['30daysAgo']} />
 
-        {chats.length === 0 && (
+        {Object.keys(chats).length === 0 && (
           <div className="text-center text-zinc-600 py-8">
             <i className="ri-chat-off-line text-2xl block mb-2"></i>
             <p className="text-sm">No chats yet</p>
@@ -210,7 +181,7 @@ const Sidebar = ({ chats, selectedChat, onSelectChat, onDeleteChat, onNewChat })
             <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
               <i className="ri-user-line text-zinc-400 text-sm"></i>
             </div>
-            <span className="text-sm text-zinc-300">username</span>
+            <span className="text-sm text-zinc-300">{user?.username || 'User'}</span>
           </div>
           <div className="flex items-center gap-2 text-zinc-500">
             <button className="hover:text-zinc-300 transition">
@@ -297,14 +268,23 @@ const Message = ({ msg }) => {
             : 'bg-zinc-900 text-zinc-200'
         }`}
       >
-        <p>{msg.content}</p>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+  {msg.content}
+</ReactMarkdown>
       </div>
     </div>
   )
 }
 
 // Chat View Component
-const ChatView = ({ chat, messages, onSendMessage, isLoading }) => {
+const ChatView = ({ currentchatId, chats }) => {
+  const dispatch = useDispatch()
+  const { handlegenraterespons } = usechat()
+  const { loading } = useSelector(state => state.chat)
+  
+  const currentChat = chats[currentchatId]
+  const messages = currentChat?.messages || []
+  
   const [inputValue, setInputValue] = useState('')
   const messagesEndRef = useRef(null)
 
@@ -319,16 +299,24 @@ const ChatView = ({ chat, messages, onSendMessage, isLoading }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (inputValue.trim()) {
-      onSendMessage(inputValue)
+      handlegenraterespons({ message: inputValue, chatid: currentchatId })
       setInputValue('')
     }
+  }
+
+  if (!currentChat) {
+    return (
+      <div className="ml-60 h-screen bg-black flex items-center justify-center">
+        <p className="text-zinc-600">Select a chat to view messages</p>
+      </div>
+    )
   }
 
   return (
     <div className="ml-60 h-screen bg-black flex flex-col">
       {/* Header */}
       <div className="border-b border-zinc-900 px-6 py-4">
-        <h2 className="text-lg text-zinc-200 font-semibold">{chat.title}</h2>
+        <h2 className="text-lg text-zinc-200 font-semibold">{currentChat.title}</h2>
       </div>
 
       {/* Messages Area */}
@@ -343,7 +331,7 @@ const ChatView = ({ chat, messages, onSendMessage, isLoading }) => {
           ))
         )}
 
-        {isLoading && (
+        {loading && (
           <div className="flex justify-start mb-4">
             <div className="bg-zinc-900 rounded-lg px-4 py-2">
               <div className="flex gap-2">
@@ -372,7 +360,7 @@ const ChatView = ({ chat, messages, onSendMessage, isLoading }) => {
             />
             <button
               type="submit"
-              disabled={isLoading || !inputValue.trim()}
+              disabled={loading || !inputValue.trim()}
               className="w-10 h-10 rounded-full bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 flex items-center justify-center text-zinc-400 hover:text-zinc-300 transition"
             >
               <i className="ri-send-plane-fill"></i>
@@ -385,93 +373,52 @@ const ChatView = ({ chat, messages, onSendMessage, isLoading }) => {
 }
 
 // Main Dashboard
-
 function Dashboard() {
+  const dispatch = useDispatch()
   const { user } = useSelector(state => state.auth)
-  const { intializesocketconnection } = usechat()
+const currentchatid = useSelector(state => state.chat.currentchatid)
+const chats = useSelector(state => state.chat.chats)
 
-  const [chats, setChats] = useState(DEMO_CHATS)
-  const [selectedChat, setSelectedChat] = useState(null)
-  const [messages, setMessages] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+const currentChat = chats[currentchatid]
+  const { intializesocketconnection, handlegenraterespons } = usechat()
 
   useEffect(() => {
     intializesocketconnection()
   }, [])
 
-  const handleSelectChat = (chat) => {
-    setSelectedChat(chat)
-    setMessages(chat.messages || [])
+  const handleSelectChat = (chatId) => {
+    dispatch(setcurrentchatid(chatId))
   }
 
   const handleNewChat = () => {
-    setSelectedChat(null)
-    setMessages([])
+    dispatch(setcurrentchatid(null))
   }
 
   const handleSendMessage = async (content) => {
-    if (!selectedChat) {
-      // Create new chat if in welcome screen
-      const newChat = {
-        id: Date.now(),
-        title: content.substring(0, 50),
-        date: new Date(),
-        messages: []
-      }
-      setChats([newChat, ...chats])
-      setSelectedChat(newChat)
-      
-      // Add user message
-      const userMsg = { role: 'user', content, timestamp: new Date() }
-      setMessages([userMsg])
-
-      // Simulate AI response
-      setIsLoading(true)
-      setTimeout(() => {
-        const aiMsg = {
-          role: 'ai',
-          content: 'This is a demo AI response. Connect your backend API to enable real responses.',
-          timestamp: new Date()
-        }
-        setMessages(prev => [...prev, aiMsg])
-        setIsLoading(false)
-      }, 1000)
+    if (!currentchatid) {
+      // Create new chat - the title will come from backend response
+      const chatTitle = content.substring(0, 50)
+      handlegenraterespons({ message: content, chatid: null })
     } else {
-      // Add to existing chat
-      const userMsg = { role: 'user', content, timestamp: new Date() }
-      const updatedMessages = [...messages, userMsg]
-      setMessages(updatedMessages)
-
-      // Update chat with new message
-      setChats(chats.map(c =>
-        c.id === selectedChat.id ? { ...c, messages: updatedMessages } : c
-      ))
-
-      // Simulate AI response
-      setIsLoading(true)
-      setTimeout(() => {
-        const aiMsg = {
-          role: 'ai',
-          content: 'Demo response. Connect your backend API for real AI responses.',
-          timestamp: new Date()
-        }
-        const finalMessages = [...updatedMessages, aiMsg]
-        setMessages(finalMessages)
-        setChats(chats.map(c =>
-          c.id === selectedChat.id ? { ...c, messages: finalMessages } : c
-        ))
-        setIsLoading(false)
-      }, 1000)
+      // Send message to existing chat
+      handlegenraterespons({ message: content, chatid: currentchatid })
     }
   }
 
-  const handleDeleteChat = (chatId) => {
-    const updatedChats = chats.filter(c => c.id !== chatId)
-    setChats(updatedChats)
-    
-    if (selectedChat?.id === chatId) {
-      setSelectedChat(null)
-      setMessages([])
+  const handleDeleteChat = async (chatId) => {
+    try {
+      await deletechat({ chatid: chatId })
+      // Update Redux state by removing the chat
+      const updatedChats = { ...chats }
+      delete updatedChats[chatId]
+      dispatch(setchats(updatedChats))
+      
+      // If the deleted chat was the current one, show welcome screen
+      if (currentchatid === chatId) {
+        dispatch(setcurrentchatid(null))
+      }
+    } catch (error) {
+      console.error('Failed to delete chat:', error)
     }
   }
 
@@ -479,20 +426,18 @@ function Dashboard() {
     <div className="h-screen w-full bg-black text-zinc-200 overflow-hidden">
       <Sidebar
         chats={chats}
-        selectedChat={selectedChat}
+        selectedChatId={currentchatid}
         onSelectChat={handleSelectChat}
         onDeleteChat={handleDeleteChat}
         onNewChat={handleNewChat}
       />
 
-      {selectedChat === null ? (
+      {currentchatid === null ? (
         <WelcomeScreen onSendMessage={handleSendMessage} />
       ) : (
         <ChatView
-          chat={selectedChat}
-          messages={messages}
-          onSendMessage={handleSendMessage}
-          isLoading={isLoading}
+          currentchatId={currentchatid}
+          chats={chats}
         />
       )}
     </div>

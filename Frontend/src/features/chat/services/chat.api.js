@@ -12,18 +12,20 @@ const api =axios.create({
 export async function genrateresponse({message,chatid}){
     try {
         const res = await api.post('/api/chats/message',{message,chatid})
-        return res.data;
+        return res.data
     } catch (error) {
-        console.log(error);    
+        console.log('genrateresponse error:', error)
+        throw error
     }
 }
+
 export async function getchats(){
     try {
         const res = await api.get('/api/chats/')
         return res.data
     } catch (error) {
-        console.log(error);
-        
+        console.log('getchats error:', error)
+        throw error
     }
 }
 
@@ -32,18 +34,17 @@ export async function getmessages({chatid}){
         const res = await api.get(`/api/chats/messages/${chatid}`)
         return res.data
     } catch (error) {
-        console.log(error);
-        
+        console.log('getmessages error:', error)
+        throw error
     }
-
 }
 
 export async function deletechat({chatid}){
     try {
-        const res = api.delete(`/api/chats/delete/${chatid}`)
+        const res = await api.delete(`/api/chats/delete/${chatid}`)
         return res.data
     } catch (error) {
-        console.log(error);
-        
+        console.log(error)
+        throw error
     }
 }

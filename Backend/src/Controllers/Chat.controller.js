@@ -20,7 +20,7 @@ export async function messageandres(req,res){
    })
    const messages = await messagemodel.find({chat:chatid || chat._id})
    //    console.log(messages);
-   
+  
    const result = await generateMessage(messages)
   
    const aimessage = await messagemodel.create({
@@ -30,8 +30,7 @@ export async function messageandres(req,res){
    })
     
     res.status(201).json({
-        title:chat.title,
-        chat,
+        chat: await chatmodel.findById(aimessage.chat),
        usermessage,
        aimessage
     })
