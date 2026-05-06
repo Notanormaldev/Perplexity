@@ -1,10 +1,25 @@
-
+import { useDispatch } from 'react-redux'
+import { genrateresponse, getchats, getmessages ,deletechat} from '../services/chat.api'
 import { intializesocketconnection } from '../services/chat.socket'
+import { setchats ,setloading,seterr,setcurrentchatid, createNewChat } from '../chat.slice'
 
 export  const usechat=()=> {
-
-   async function sendmessages({message,chatid}){
+   const dispatch = useDispatch()
+   async function handlegenraterespons({message,chatid}){
+     try {
+      dispatch(setloading(true))
+      const data = await genrateresponse({message,chatid})
+      const {aimessage,usermessage,title,chat}=data
+      dispatch(createNewChat({
+        chatid:chat._id,
+        title:chat.title
+      }))
       
+     } catch (error) {
+      dispatch(seterr(error))
+     }finally{
+      dispatch(setloading(false))
+     }
    }
 
 

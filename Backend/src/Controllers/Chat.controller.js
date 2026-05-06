@@ -30,7 +30,9 @@ export async function messageandres(req,res){
    })
     
     res.status(201).json({
-       messages,
+        title:chat.title,
+        chat,
+       usermessage,
        aimessage
     })
 
