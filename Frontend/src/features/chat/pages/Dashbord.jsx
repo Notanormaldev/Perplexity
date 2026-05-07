@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { usechat } from '../hook/usechat'
 import { setcurrentchatid, setchats } from '../chat.slice'
-import { deletechat } from '../services/chat.api'
 import 'remixicon/fonts/remixicon.css'
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -380,14 +379,19 @@ const currentchatid = useSelector(state => state.chat.currentchatid)
 const chats = useSelector(state => state.chat.chats)
 
 const currentChat = chats[currentchatid]
-  const { intializesocketconnection, handlegenraterespons } = usechat()
+  const { intializesocketconnection, handlegenraterespons, handleloadchats, handleloadmessages, handledeletechat } = usechat()
 
   useEffect(() => {
     intializesocketconnection()
+    handleloadchats()
   }, [])
 
   const handleSelectChat = (chatId) => {
     dispatch(setcurrentchatid(chatId))
+    // Load messages if not already loaded
+    if (chats[chatId] && chats[chatId].messages.length === 0) {
+      handleloadmessages({chatid: chatId})
+    }
   }
 
   const handleNewChat = () => {
@@ -407,7 +411,7 @@ const currentChat = chats[currentchatid]
 
   const handleDeleteChat = async (chatId) => {
     try {
-      await deletechat({ chatid: chatId })
+      await handledeletechat({ chatid: chatId })
       // Update Redux state by removing the chat
       const updatedChats = { ...chats }
       delete updatedChats[chatId]

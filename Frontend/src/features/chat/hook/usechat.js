@@ -52,9 +52,64 @@ export  const usechat=()=> {
      }
    }
 
+   async function handleloadchats(){
+     try {
+       dispatch(setloading(true))
+       const data = await getchats()
+       const chatsObj = {}
+       data.chats.forEach(chat => {
+         chatsObj[chat._id] = {
+           id: chat._id,
+           title: chat.title,
+           messages: [], // messages will be loaded when selected
+           lastUpdated: chat.updatedAt || chat.createdAt
+         }
+       })
+       dispatch(setchats(chatsObj))
+     } catch (error) {
+       console.error('Error loading chats:', error)
+       dispatch(seterr(error.message || 'Failed to load chats'))
+     } finally {
+       dispatch(setloading(false))
+     }
+   }
+
+   async function handleloadmessages({chatid}){
+     try {
+       const data = await getmessages({chatid})
+       // Assuming data.messages is an array of {content, role}
+       const messages = data.messages.map(msg => ({
+         content: msg.content,
+         role: msg.role
+       }))
+       // Update the chat with messages
+       dispatch(setchats({
+         ...chats,
+         [chatid]: {
+           ...chats[chatid],
+           messages
+         }
+       }))
+     } catch (error) {
+       console.error('Error loading messages:', error)
+     }
+   }
+
+   async function handledeletechat({chatid}){
+        try {
+       const data = await deletechat({chatid})
+       return data
+     } catch (error) {
+       console.error('Error loading messages:', error)
+     }
+   }
+
 
   return {
      intializesocketconnection,
-     handlegenraterespons
+     handlegenraterespons,
+     handleloadchats,
+     handleloadmessages,
+     handledeletechat
 }
 }
