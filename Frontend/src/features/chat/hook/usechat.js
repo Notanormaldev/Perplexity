@@ -77,7 +77,7 @@ export  const usechat=()=> {
    async function handleloadmessages({chatid}){
      try {
        const data = await getmessages({chatid})
-       // Assuming data.messages is an array of {content, role}
+       // data.messages is an array of {content, role}
        const messages = data.messages.map(msg => ({
          content: msg.content,
          role: msg.role

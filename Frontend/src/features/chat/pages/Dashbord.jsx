@@ -5,6 +5,9 @@ import { setcurrentchatid, setchats } from '../chat.slice'
 import 'remixicon/fonts/remixicon.css'
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+
+
+
 // Logo with fade effect
 const LogoIcon = ({ size = 24, withFade = false }) => {
   return (
