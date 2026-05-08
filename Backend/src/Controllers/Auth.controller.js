@@ -817,5 +817,25 @@ export async function logout(req,res){
   })
 }
 export async function deleteaccount(req,res){
+    const id = req.user.id
+
+     
+    const finduser = await usermodel.findById(id)
+
+    if(!finduser){
+        return res.status(401).json({
+            msg:"user not exist"
+        })
+    }
     
+    await usermodel.findByIdAndDelete(id)
+    res.clearCookie('token')
+
+    return res.status(200).json({
+        msg:"user deleted sucessfully"
+    })
+
+
+
+
 }
