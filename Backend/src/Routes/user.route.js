@@ -9,7 +9,7 @@ UserRoute.post('/register',RegisterValidation,register)
 UserRoute.get('/verify-email',verifyemail)
 UserRoute.post('/login',LoginValidation,login)
 UserRoute.get('/get-me',authuser,getme)
-
+UserRoute.post('/logout',authuser)
 
 
 export default UserRoute;

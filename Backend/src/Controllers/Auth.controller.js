@@ -1,3 +1,4 @@
+import redis from "../config/cache.js"
 import usermodel from "../model/user.model.js"
 import { sendEmail } from "../services/mail.service.js"
 import jwt from 'jsonwebtoken'
@@ -154,4 +155,17 @@ export async function getme(req,res){
     msg:"getme",
     user:user
    })
+}
+export async function logout(req,res){
+  const token = req.cookies.token;
+  res.clearCookie('token');
+  await redis.set(token,Date.now().toString(),'EX',3600)
+
+
+  return res.status(200).json({
+    msg:"logout sucessfully"
+  })
+}
+export async function deleteaccount(req,res){
+    
 }
