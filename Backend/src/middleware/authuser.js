@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import redis from '../config/cache'
+import redis from '../config/cache.js'
 
 
 export async function authuser(req,res,next){

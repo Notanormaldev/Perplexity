@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getme, login, register, verifyemail } from "../Controllers/Auth.controller.js";
+import { getme, login, logout, register, verifyemail } from "../Controllers/Auth.controller.js";
 import { LoginValidation, RegisterValidation } from "../Validation/Register.validation.js";
 import { authuser } from "../middleware/authuser.js";
 
@@ -9,7 +9,7 @@ UserRoute.post('/register',RegisterValidation,register)
 UserRoute.get('/verify-email',verifyemail)
 UserRoute.post('/login',LoginValidation,login)
 UserRoute.get('/get-me',authuser,getme)
-UserRoute.post('/logout',authuser)
+UserRoute.post('/logout',authuser,logout)
 
 
 export default UserRoute;
