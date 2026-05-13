@@ -12,11 +12,11 @@ from "../services/embedding.service.js"
 export async function uploadDocument(req,res){
 
    const file = req.file
-
    const {chatid} = req.params
 
    // extract text
    const text = await extractText(file)
+
 
    // chunks
    const chunks = chunkText(text)

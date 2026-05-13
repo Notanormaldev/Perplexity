@@ -23,7 +23,5 @@ export async function createEmbedding(text){
    }catch(error){
 
       console.log(error)
-
-      throw error
    }
 }

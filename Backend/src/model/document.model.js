@@ -18,6 +18,6 @@ const documentSchema = new mongoose.Schema({
 })
 
 export default mongoose.model(
-   "document",
+   "documents",
    documentSchema
 )
