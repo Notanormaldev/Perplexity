@@ -6,6 +6,7 @@ from "../model/document.model.js"
 import { createEmbedding }
 from "./embedding.service.js"
 
+
 export async function searchRelevantChunks(
 
    chatid,
@@ -18,6 +19,8 @@ export async function searchRelevantChunks(
 
    const result =
    await documentmodel.aggregate([
+   
+
 
       {
          $vectorSearch:{
@@ -30,18 +33,22 @@ export async function searchRelevantChunks(
 
             numCandidates:50,
 
-            limit:3,
+            limit:1,
 
             filter:{
 
                chat:
-               new mongoose.Types.ObjectId(
+             new mongoose.Types.ObjectId(
                   chatid
                )
             }
          }
       }
    ])
+   console.log(embedding)
+console.log(embedding.length)
+console.log(typeof embedding[0])
+console.log(result.map(doc=>doc.chunk).join("\n"));
 
    return result
    .map(doc=>doc.chunk)
