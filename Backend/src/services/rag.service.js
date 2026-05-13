@@ -1,49 +1,19 @@
-import mongoose from "mongoose"
+export function chunkText(text){
 
-import documentmodel
-from "../model/document.model.js"
+   const chunkSize = 700
 
-import { createEmbedding }
-from "./embedding.service.js"
+   const chunks = []
 
-export async function searchRelevantChunks(
+   for(
+      let i=0;
+      i<text.length;
+      i+=chunkSize
+   ){
 
-   chatid,
-   question
+      chunks.push(
+         text.slice(i,i+chunkSize)
+      )
+   }
 
-){
-
-   const embedding =
-   await createEmbedding(question)
-
-   const result =
-   await documentmodel.aggregate([
-
-      {
-         $vectorSearch:{
-
-            index:"vector_index",
-
-            path:"embedding",
-
-            queryVector:embedding,
-
-            numCandidates:50,
-
-            limit:3,
-
-            filter:{
-
-               chat:
-               new mongoose.Types.ObjectId(
-                  chatid
-               )
-            }
-         }
-      }
-   ])
-
-   return result
-   .map(doc=>doc.chunk)
-   .join("\n")
+   return chunks
 }

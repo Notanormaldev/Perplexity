@@ -1,17 +1,41 @@
 import fs from "fs"
-import pdfParse from "pdf-parse"
+
 import mammoth from "mammoth"
+
+import * as pdfjsLib
+from "pdfjs-dist/legacy/build/pdf.mjs"
 
 export async function extractText(file){
 
    // PDF
    if(file.mimetype === "application/pdf"){
 
-      const buffer = fs.readFileSync(file.path)
+      const data = new Uint8Array(
+         fs.readFileSync(file.path)
+      )
 
-      const data = await pdfParse(buffer)
+      const pdf =
+      await pdfjsLib.getDocument(data).promise
 
-      return data.text
+      let text = ""
+
+      for(let i=1;i<=pdf.numPages;i++){
+
+         const page =
+         await pdf.getPage(i)
+
+         const content =
+         await page.getTextContent()
+
+         const strings =
+         content.items.map(
+            item=>item.str
+         )
+
+         text += strings.join(" ")
+      }
+
+      return text
    }
 
    // DOCX
@@ -22,6 +46,7 @@ export async function extractText(file){
 
       const result =
       await mammoth.extractRawText({
+
          path:file.path
       })
 
