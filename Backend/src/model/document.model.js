@@ -4,7 +4,7 @@ const documentSchema = new mongoose.Schema({
 
    chat:{
       type:mongoose.Schema.Types.ObjectId,
-      ref:"chat"
+      ref:"chats"
    },
 
    chunk:{
