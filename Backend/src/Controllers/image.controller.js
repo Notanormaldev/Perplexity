@@ -1,23 +1,42 @@
-import {
-   describeImage
-}
-from "../services/image-ai.service.js"
+import messagemodel from "../model/message.model.js";
 
-export async function imageController(
+import { generateImageMessage } from "../services/image.service.js";
 
-   req,
-   res
+export async function imageController(req, res) {
+  try {
+    const { chatid } = req.params;
 
-){
+    const prompt = req.body.message || "Describe this image";
 
-   const result =
-   await describeImage(
+    // USER SAVE
+    await messagemodel.create({
+      chat: chatid,
+      role: "user",
+      content: prompt,
+      file: req.file.path,
+      fileType: "image",
+    });
 
-      req.file.path
-   )
+    // AI CALL (SERVICE)
+    const result = await generateImageMessage(
+      req.file.path,
+      prompt
+    );
 
-   return res.status(200).json({
+    // AI SAVE
+    await messagemodel.create({
+      chat: chatid,
+      role: "ai",
+      content: result,
+       file: null,
+      fileType: "text",
+    });
 
-      result
-   })
+    return res.status(200).json({ result });
+
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
 }

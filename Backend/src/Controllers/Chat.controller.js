@@ -18,7 +18,9 @@ export async function messageandres(req,res){
     const usermessage =await messagemodel.create({
     chat:chatid || chat._id,
     content:message,
-    role:'user'
+    role:'user',
+    file: filePath,
+    fileType:req.file.mimetype
    })
    const messages = await messagemodel.find({chat:chatid || chat._id})
    //    console.log(messages);
@@ -28,7 +30,9 @@ export async function messageandres(req,res){
    const aimessage = await messagemodel.create({
     chat:chatid || chat._id,
     content:result,
-    role:"ai"
+    role:"ai",
+      file: null,
+  fileType: "text"
    })
     
     res.status(201).json({

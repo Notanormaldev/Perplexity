@@ -16,7 +16,17 @@ const messageschema = mongoose.Schema({
         type:String,
         enum:['user','ai'],
         required:[true,"role required"]
-    }
+    },
+ file: {
+  type: String,
+  default: null
+},
+
+fileType: {
+  type: String,
+  enum: ["text", "image", "pdf"],
+  default: "text"
+}
 },{
     timestamps:true
 })

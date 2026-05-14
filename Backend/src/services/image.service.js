@@ -1,47 +1,43 @@
-import fs from "fs"
+import fs from "fs";
+import OpenAI from "openai";
+import "dotenv/config";
 
-import {
-   GoogleGenerativeAI
-}
-from "@google/generative-ai"
+const client = new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
 
-const genAI =
-new GoogleGenerativeAI(
-   process.env.GEMENI_API
-)
+  baseURL: "https://openrouter.ai/api/v1",
+});
 
-export async function describeImage(
+export async function generateImageMessage(filepath, prompt = "Describe this image in detail") {
 
-   filepath,
-   prompt = "Describe this image in detail"
+  const image = fs.readFileSync(filepath);
+  const base64 = image.toString("base64");
 
-){
+  const response = await client.chat.completions.create({
+    model: "openrouter/auto",
 
-   const model =
-   genAI.getGenerativeModel({
+    messages: [
+      {
+        role: "system",
+        content: BASE_SYSTEM_PROMPT,
+      },
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: prompt,
+          },
+          {
+            type: "image_url",
+            image_url: {
+              url: `data:image/png;base64,${base64}`,
+            },
+          },
+        ],
+      },
+    ],
+  });
 
-      model:"gemini-1.5-flash"
-   })
-
-   const image = fs.readFileSync(filepath)
-
-   const imagePart = {
-
-      inlineData:{
-
-         data:image.toString("base64"),
-
-         mimeType:"image/png"
-      }
-   }
-
-   const result =
-   await model.generateContent([
-
-      prompt,
-
-      imagePart
-   ])
-
-   return result.response.text()
+  return response.choices[0].message.content;
 }

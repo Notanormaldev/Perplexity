@@ -45,10 +45,10 @@ export async function searchRelevantChunks(
          }
       }
    ])
-   console.log(embedding)
-console.log(embedding.length)
-console.log(typeof embedding[0])
-console.log(result.map(doc=>doc.chunk).join("\n"));
+//    console.log(embedding)
+// console.log(embedding.length)
+// console.log(typeof embedding[0])
+// console.log(result.map(doc=>doc.chunk).join("\n"));
 
    return result
    .map(doc=>doc.chunk)
