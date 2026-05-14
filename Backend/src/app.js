@@ -4,7 +4,7 @@ import UserRoute from './Routes/user.route.js'
 import morgan from 'morgan'
 import cors from 'cors'
 import chatRouter from './Routes/chat.route.js'
-
+import imageRoute from "./routes/image.route.js"
 
 const app = express()
 app.use(express.json())
@@ -19,5 +19,7 @@ app.use(cors({
 }))
 app.use('/api/auth',UserRoute)
 app.use('/api/chats',chatRouter)
+app.use("/api/image",imageRoute)
+
 
 export default app;

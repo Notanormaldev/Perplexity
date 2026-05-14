@@ -1,26 +1,23 @@
-import express from "express"
-
-import multer from "multer"
-
 import {
-   imageController
+   describeImage
 }
-from "../Controllers/image.controller.js"
+from "../services/image-ai.service.js"
 
-const router = express.Router()
+export async function imageController(
 
-const upload = multer({
+   req,
+   res
 
-   dest:"uploads/"
-})
+){
 
-router.post(
+   const result =
+   await describeImage(
 
-   "/describe",
+      req.file.path
+   )
 
-   upload.single("image"),
+   return res.status(200).json({
 
-   imageController
-)
-
-export default router
+      result
+   })
+}
