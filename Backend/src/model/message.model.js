@@ -24,7 +24,7 @@ const messageschema = mongoose.Schema({
 
 fileType: {
   type: String,
-  enum: ["text", "image", "pdf"],
+  enum: ["text", "image", "pdf", "document"],
   default: "text"
 }
 },{

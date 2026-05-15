@@ -1,4 +1,5 @@
 import documentmodel from "../model/document.model.js"
+import messagemodel from "../model/message.model.js"
 
 import { extractText }
 from "../services/file.service.js"
@@ -17,6 +18,15 @@ export async function uploadDocument(req,res){
    // extract text
    const text = await extractText(file)
 
+
+   // save upload as a chat document message so the UI can reflect the action
+   await messagemodel.create({
+      chat: chatid,
+      role: "user",
+      content: `Uploaded document ${file.originalname}`,
+      file: file.path,
+      fileType: file.mimetype === "application/pdf" ? "pdf" : "text"
+   })
 
    // chunks
    const chunks = chunkText(text)

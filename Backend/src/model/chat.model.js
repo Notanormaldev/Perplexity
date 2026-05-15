@@ -11,6 +11,10 @@ const chatSchema = mongoose.Schema({
         type:String,
         default:"New Chat",
         required:[true,'title required']
+    },
+    pinned:{
+        type:Boolean,
+        default:false
     }
 },{
     timestamps:true

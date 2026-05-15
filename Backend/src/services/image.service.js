@@ -8,10 +8,15 @@ const client = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
 });
 
-export async function generateImageMessage(filepath, prompt = "Describe this image in detail") {
+const IMAGE_SYSTEM_PROMPT = `You are an AI assistant that describes images clearly and concisely. Use the image content to answer the user's prompt and avoid making unsupported assumptions.`
 
-  const image = fs.readFileSync(filepath);
-  const base64 = image.toString("base64");
+export async function generateImageMessage(filepath, prompt = "Describe this image in detail") {
+  if (!filepath) {
+    throw new Error('No image file path provided')
+  }
+
+  const image = fs.readFileSync(filepath)
+  const base64 = image.toString("base64")
 
   const response = await client.chat.completions.create({
     model: "openrouter/auto",
@@ -19,7 +24,7 @@ export async function generateImageMessage(filepath, prompt = "Describe this ima
     messages: [
       {
         role: "system",
-        content: BASE_SYSTEM_PROMPT,
+        content: IMAGE_SYSTEM_PROMPT,
       },
       {
         role: "user",
