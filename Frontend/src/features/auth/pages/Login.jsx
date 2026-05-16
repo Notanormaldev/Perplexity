@@ -37,7 +37,7 @@ function Login() {
     <main className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center px-4 py-10">
 
            <Background />
-       <h1 className='text-white absolute left-1 top-1 font-bold font-stretch-50% text-3xl mask-b-from-neutral-50 '><i class="ri-ancient-gate-line"></i>  ZErio Ai</h1>
+       <h1 className='text-white absolute left-1 top-1 font-light font-stretch-50% text-3xl mask-b-from-neutral-50 '><i  class="ri-ancient-gate-line"></i>  ZErio Ai</h1>
       <div className="w-full max-w-md">
         <div className="rounded-[32px] border border-slate-800 bg-black-900/95 p-8 shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
        <div className='font-extrabold font-stretch-50% text-4xl  mask-b-from-neutral-50 w-[10%] m-auto'>

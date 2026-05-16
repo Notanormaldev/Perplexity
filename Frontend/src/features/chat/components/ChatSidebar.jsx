@@ -247,9 +247,10 @@ const AboutModal = ({ open, onClose }) => {
       <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,.75)',backdropFilter:'blur(6px)'}} onClick={onClose}/>
       <div style={{position:'relative',width:'100%',maxWidth:340,margin:'0 20px',background:'#151515',border:'1px solid rgba(255,255,255,0.09)',borderRadius:18,boxShadow:'0 25px 60px rgba(0,0,0,.7)',overflow:'hidden',animation:'scaleIn .18s ease'}}>
         <div style={{padding:'26px 22px 22px',textAlign:'center'}}>
-          <div style={{width:58,height:58,margin:'0 auto 14px',borderRadius:16,background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.1)',display:'flex',alignItems:'center',justifyContent:'center'}}><LogoIcon size={26}/></div>
-          <h2 style={{color:'#ececec',fontWeight:700,fontSize:20,marginBottom:4}}>Zerio AI</h2>
-          <p style={{color:'#52525b',fontSize:12,marginBottom:14}}>v1.0.0 — Smart answers, instantly</p>
+          <div style={{width:58,height:58,margin:'0 auto 4px',  borderRadius:16,background:'rgba(255,255,255,0.00)',display:'flex',alignItems:'center',justifyContent:'center'}}><LogoIcon size={36}/></div>
+          <h2 style={{color:'#ececec',fontWeight:200,fontSize:20,marginBottom:4}}>ZErio AI</h2>
+          <p style={{color:'#52525b',fontSize:12,marginBottom:2}}>Smart answers, instantly</p>
+          <p style={{color:'#52525b',fontSize:12,marginBottom:4}}>v1.0.0 </p>
           <p style={{color:'#a1a1aa',fontSize:13,lineHeight:1.65,marginBottom:18}}>Zerio combines powerful LLMs with real-time internet access to deliver accurate, up-to-date answers.</p>
           <div style={{display:'flex',flexWrap:'wrap',gap:5,justifyContent:'center',marginBottom:18}}>
             {['React','Node.js','MongoDB','Socket.io','Gemini AI'].map(t=>(
@@ -258,10 +259,10 @@ const AboutModal = ({ open, onClose }) => {
           </div>
           <div style={{padding:'12px 14px',borderRadius:11,background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.07)',textAlign:'left',marginBottom:16}}>
             <p style={{color:'#52525b',fontSize:10,textTransform:'uppercase',letterSpacing:'.1em',marginBottom:8}}>Developer</p>
-            <p style={{color:'#ececec',fontWeight:500,fontSize:13,marginBottom:8}}>Your Name Here</p>
+            <p style={{color:'#ececec',fontWeight:500,fontSize:13,marginBottom:8}}>HARSH PATEL</p>
             <div style={{display:'flex',gap:16}}>
-              <a href="https://github.com/yourhandle" target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',gap:5,color:'#a1a1aa',fontSize:12,textDecoration:'none'}}><i className="ri-github-fill" style={{fontSize:14}}/> GitHub</a>
-              <a href="https://linkedin.com/in/yourhandle" target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',gap:5,color:'#a1a1aa',fontSize:12,textDecoration:'none'}}><i className="ri-linkedin-box-fill" style={{fontSize:14}}/> LinkedIn</a>
+              <a href="https://github.com/notanormaldev" target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',gap:5,color:'#a1a1aa',fontSize:12,textDecoration:'none'}}><i className="ri-github-fill" style={{fontSize:14}}/> GitHub</a>
+              <a href="https://www.linkedin.com/in/harsh-patel-a77148314/" target="_blank" rel="noreferrer" style={{display:'flex',alignItems:'center',gap:5,color:'#a1a1aa',fontSize:12,textDecoration:'none'}}><i className="ri-linkedin-box-fill" style={{fontSize:14}}/> LinkedIn</a>
             </div>
           </div>
           <button onClick={onClose} style={{width:'100%',padding:'10px',borderRadius:11,border:'1px solid rgba(255,255,255,0.08)',background:'transparent',color:'#a1a1aa',fontSize:13,cursor:'pointer'}}>Close</button>
