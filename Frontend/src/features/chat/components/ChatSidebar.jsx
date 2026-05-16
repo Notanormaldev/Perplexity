@@ -253,7 +253,7 @@ const AboutModal = ({ open, onClose }) => {
           <p style={{color:'#52525b',fontSize:12,marginBottom:4}}>v1.0.0 </p>
           <p style={{color:'#a1a1aa',fontSize:13,lineHeight:1.65,marginBottom:18}}>Zerio combines powerful LLMs with real-time internet access to deliver accurate, up-to-date answers.</p>
           <div style={{display:'flex',flexWrap:'wrap',gap:5,justifyContent:'center',marginBottom:18}}>
-            {['React','Node.js','MongoDB','Socket.io','Gemini AI'].map(t=>(
+            {['React','Node.js','Express.js','MongoDB','Socket.io','RAG','Tavliy','LLMS','Imagekit'].map(t=>(
               <span key={t} style={{fontSize:11,padding:'3px 9px',borderRadius:6,background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.08)',color:'#a1a1aa'}}>{t}</span>
             ))}
           </div>
