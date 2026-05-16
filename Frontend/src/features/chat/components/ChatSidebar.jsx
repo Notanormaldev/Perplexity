@@ -100,8 +100,9 @@ const SettingsModal = ({
           inset: 0,
           zIndex: 100,
           display: 'flex',
-          alignItems: 'flex-end',
+          alignItems: 'center',
           justifyContent: 'center',
+          padding: '20px'
         }}
       >
         {/* BACKDROP */}
@@ -123,9 +124,10 @@ const SettingsModal = ({
             maxWidth: 440,
             background: '#151515',
             border: '1px solid rgba(255,255,255,0.09)',
-            borderRadius: '20px 20px 0 0',
-            boxShadow: '0 -16px 50px rgba(0,0,0,.5)',
+            borderRadius: '20px',
+            boxShadow: '0 25px 50px rgba(0,0,0,.5)',
             overflow: 'hidden',
+            animation: 'scaleIn .18s ease'
           }}
         >
           {/* HEADER */}
@@ -179,11 +181,11 @@ const SettingsModal = ({
                 {init}
               </div>
 
-              <div>
-                <div style={{ color: '#ececec' }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ color: '#ececec', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {user?.username || 'User'}
                 </div>
-                <div style={{ color: '#71717a', fontSize: 12 }}>
+                <div style={{ color: '#71717a', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   @{(user?.username || 'user').toLowerCase()}
                 </div>
               </div>
@@ -243,9 +245,9 @@ export default SettingsModal
 const AboutModal = ({ open, onClose }) => {
   if (!open) return null
   return (
-    <div style={{position:'fixed',inset:0,zIndex:100,display:'flex',alignItems:'center',justifyContent:'center'}}>
+    <div style={{position:'fixed',inset:0,zIndex:100,display:'flex',alignItems:'center',justifyContent:'center',padding:'20px'}}>
       <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,.75)',backdropFilter:'blur(6px)'}} onClick={onClose}/>
-      <div style={{position:'relative',width:'100%',maxWidth:340,margin:'0 20px',background:'#151515',border:'1px solid rgba(255,255,255,0.09)',borderRadius:18,boxShadow:'0 25px 60px rgba(0,0,0,.7)',overflow:'hidden',animation:'scaleIn .18s ease'}}>
+      <div style={{position:'relative',width:'100%',maxWidth:340,background:'#151515',border:'1px solid rgba(255,255,255,0.09)',borderRadius:18,boxShadow:'0 25px 60px rgba(0,0,0,.7)',overflow:'hidden',animation:'scaleIn .18s ease'}}>
         <div style={{padding:'26px 22px 22px',textAlign:'center'}}>
           <div style={{width:58,height:58,margin:'0 auto 4px',  borderRadius:16,background:'rgba(255,255,255,0.00)',display:'flex',alignItems:'center',justifyContent:'center'}}><LogoIcon size={36}/></div>
           <h2 style={{color:'#ececec',fontWeight:200,fontSize:20,marginBottom:4}}>ZErio AI</h2>
@@ -319,7 +321,7 @@ export const SearchModal = ({ open, onClose, chats, onSelectChat, onNewChat }) =
   return (
     <div style={{position:'fixed',inset:0,zIndex:200,display:'flex',alignItems:'flex-start',justifyContent:'center',paddingTop:64}}>
       <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.6)',backdropFilter:'blur(4px)'}} onClick={onClose}/>
-      <div style={{position:'relative',width:'100%',maxWidth:540,margin:'0 16px',background:'#1a1a1a',border:'1px solid rgba(255,255,255,0.1)',borderRadius:16,overflow:'hidden',boxShadow:'0 24px 60px rgba(0,0,0,0.7)',animation:'scaleIn .18s ease',maxHeight:'68vh',display:'flex',flexDirection:'column'}}>
+      <div style={{position:'relative',width:'calc(100% - 32px)',maxWidth:540,margin:'0 16px',background:'#1a1a1a',border:'1px solid rgba(255,255,255,0.1)',borderRadius:16,overflow:'hidden',boxShadow:'0 24px 60px rgba(0,0,0,0.7)',animation:'scaleIn .18s ease',maxHeight:'68vh',display:'flex',flexDirection:'column'}}>
         <div style={{display:'flex',alignItems:'center',gap:10,padding:'13px 16px',borderBottom:'1px solid rgba(255,255,255,0.07)'}}>
           <i className="ri-search-line" style={{fontSize:17,color:'#71717a',flexShrink:0}}/>
           <input ref={inputRef} value={search} onChange={e => setSearch(e.target.value)} placeholder="Search chats…"
@@ -511,20 +513,30 @@ export const Sidebar = ({ chats, selectedChatId, onSelectChat, onDeleteChat, onN
   }
 
   return (
-    <div style={{width:collapsed?50:264,background:'#131313',borderRight:'1px solid rgba(255,255,255,0.07)',height:'100dvh',display:'flex',flexDirection:'column',transition:'width .2s cubic-bezier(.4,0,.2,1)',overflow:'hidden',flexShrink:0}}>
-      <div style={{padding:'11px 10px 10px',borderBottom:'1px solid rgba(255,255,255,0.07)',display:'flex',alignItems:'center',justifyContent:collapsed?'center':'space-between',gap:6}}>
-        {!collapsed && (
+    <div style={{width: onClose ? '100%' : (collapsed ? 50 : 264), background:'#131313',borderRight:'1px solid rgba(255,255,255,0.07)',height:'100dvh',display:'flex',flexDirection:'column',transition:'width .2s cubic-bezier(.4,0,.2,1)',overflow:'hidden',flexShrink:0}}>
+      <div style={{padding:'11px 10px 10px',borderBottom:'1px solid rgba(255,255,255,0.07)',display:'flex',alignItems:'center',justifyContent:collapsed&&!onClose?'center':'space-between',gap:6}}>
+        {(!collapsed || onClose) && (
           <div style={{display:'flex',alignItems:'center',gap:8,flex:1,minWidth:0}}>
             <LogoIcon size={30}/>
             <span style={{color:'#ececec',fontWeight:200,fontSize:17.5,letterSpacing:'-.01em',whiteSpace:'nowrap'}}>ZErio AI</span>
           </div>
         )}
-        <button onClick={onToggleCollapse} title={collapsed?'Open':'Close'}
-          style={{width:28,height:28,borderRadius:7,border:'none',background:'transparent',color:'#71717a',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,transition:'all .14s'}}
-          onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,255,255,0.07)';e.currentTarget.style.color='#ececec'}}
-          onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color='#71717a'}}>
-          <i className={collapsed?'ri-sidebar-unfold-line':'ri-sidebar-fold-line'} style={{fontSize:16}}/>
-        </button>
+        {/* Mobile: show close button. Desktop: show collapse toggle */}
+        {onClose ? (
+          <button onClick={onClose} title="Close sidebar"
+            style={{width:28,height:28,borderRadius:7,border:'none',background:'transparent',color:'#71717a',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,transition:'all .14s'}}
+            onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,255,255,0.07)';e.currentTarget.style.color='#ececec'}}
+            onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color='#71717a'}}>
+            <i className="ri-close-line" style={{fontSize:18}}/>
+          </button>
+        ) : (
+          <button onClick={onToggleCollapse} title={collapsed?'Open':'Close'}
+            style={{width:28,height:28,borderRadius:7,border:'none',background:'transparent',color:'#71717a',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,transition:'all .14s'}}
+            onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,255,255,0.07)';e.currentTarget.style.color='#ececec'}}
+            onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color='#71717a'}}>
+            <i className={collapsed?'ri-sidebar-unfold-line':'ri-sidebar-fold-line'} style={{fontSize:16}}/>
+          </button>
+        )}
       </div>
       <div style={{padding:'5px 6px',borderBottom:'1px solid rgba(255,255,255,0.07)',display:'flex',flexDirection:'column',gap:1}}>
         <NavBtn icon="ri-history-line" label="History" onClick={onHistoryOpen}/>

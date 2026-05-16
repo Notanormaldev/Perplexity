@@ -9,13 +9,15 @@ const MODELS = [
 ]
 
 const ModelDropdownPortal = ({ refEl, children }) => {
-  const [pos, setPos] = useState({ bottom: 0, left: 0 })
+  const [pos, setPos] = useState({ bottom: 0, left: 'auto', right: 'auto' })
   useEffect(() => {
     if (refEl?.current) {
       const rect = refEl.current.getBoundingClientRect()
+      const isRightSide = rect.left > window.innerWidth / 2
       setPos({
         bottom: window.innerHeight - rect.top + 6,
-        left: rect.left,
+        left: isRightSide ? 'auto' : rect.left,
+        right: isRightSide ? window.innerWidth - rect.right : 'auto',
       })
     }
   }, [refEl])
@@ -26,6 +28,7 @@ const ModelDropdownPortal = ({ refEl, children }) => {
         position: 'fixed',
         bottom: pos.bottom,
         left: pos.left,
+        right: pos.right,
         background: '#1e1e1e',
         border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: 12,
@@ -33,6 +36,7 @@ const ModelDropdownPortal = ({ refEl, children }) => {
         boxShadow: '0 16px 40px rgba(0,0,0,.7)',
         zIndex: 9999,
         minWidth: 220,
+        maxWidth: 'calc(100vw - 24px)',
         animation: 'dropDown .16s ease',
       }}
     >
@@ -94,13 +98,15 @@ const ModelSelector = ({ selectedModel, onSelect }) => {
 }
 
 const AttachDropdownPortal = ({ refEl, children }) => {
-  const [pos, setPos] = useState({ bottom: 0, left: 0 })
+  const [pos, setPos] = useState({ bottom: 0, left: 'auto', right: 'auto' })
   useEffect(() => {
     if (refEl?.current) {
       const rect = refEl.current.getBoundingClientRect()
+      const isRightSide = rect.left > window.innerWidth / 2
       setPos({
         bottom: window.innerHeight - rect.top + 6,
-        left: rect.left,
+        left: isRightSide ? 'auto' : rect.left,
+        right: isRightSide ? window.innerWidth - rect.right : 'auto',
       })
     }
   }, [refEl])
@@ -111,6 +117,7 @@ const AttachDropdownPortal = ({ refEl, children }) => {
         position: 'fixed',
         bottom: pos.bottom,
         left: pos.left,
+        right: pos.right,
         background: '#1e1e1e',
         border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: 11,
@@ -118,6 +125,7 @@ const AttachDropdownPortal = ({ refEl, children }) => {
         boxShadow: '0 10px 32px rgba(0,0,0,.65)',
         zIndex: 9999,
         minWidth: 175,
+        maxWidth: 'calc(100vw - 24px)',
         animation: 'dropDown .16s ease',
       }}
     >
@@ -343,7 +351,7 @@ const UploadConfirmation = ({ message }) => {
   )
 }
 
-const WelcomeScreen = ({ onSendMessage, incognito, onToggleIncognito, selectedModel, onModelChange }) => {
+const WelcomeScreen = ({ onSendMessage, incognito, onToggleIncognito, selectedModel, onModelChange, onOpenSidebar }) => {
   const [value, setValue] = useState('')
   const [attachedFile, setAttachedFile] = useState(null)
   const [uploadStatus, setUploadStatus] = useState('')
@@ -376,18 +384,35 @@ const WelcomeScreen = ({ onSendMessage, incognito, onToggleIncognito, selectedMo
   const handleAudio = () => startStop()
 
   return (
-    <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 24px 32px',background:incognito?'#090909':'#0d0d0d',minHeight:'100dvh',transition:'background .3s',position:'relative',overflowY:'auto'}}>
-      <button onClick={onToggleIncognito}
-        title={incognito?'Incognito ON':'Enable Incognito'}
-        style={{position:'absolute',top:14,right:14,width:34,height:34,borderRadius:9,border:incognito?'1px solid rgba(255,255,255,0.14)':'1px solid rgba(255,255,255,0.06)',background:incognito?'rgba(255,255,255,0.08)':'transparent',color:incognito?'#d4d4d8':'#3f3f46',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',transition:'all .2s',zIndex:10}}
-        onMouseEnter={e=>{if(!incognito){e.currentTarget.style.background='rgba(255,255,255,0.05)';e.currentTarget.style.color='#71717a'}}}
-        onMouseLeave={e=>{if(!incognito){e.currentTarget.style.background='transparent';e.currentTarget.style.color='#3f3f46'}}}>
-        <i className="ri-spy-line" style={{fontSize:15}}/>
-      </button>
+    <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 20px 32px',background:incognito?'#090909':'#0d0d0d',minHeight:'100dvh',transition:'background .3s',position:'relative',overflowY:'auto'}}>
 
-      <div style={{display:'flex',flexDirection:'column',alignItems:'center',marginBottom:20,textAlign:'center',marginTop:'13rem'}}>
-        <h1 style={{fontSize:70,fontWeight:200,color:'#ececec',letterSpacing:'-.02em',marginTop:10,marginBottom:2}}>ZErio AI</h1>
-        <p style={{color:'#3f3f46',fontSize:13}}>Smart answers, instantly</p>
+      {/* Mobile top bar */}
+      <div style={{position:'absolute',top:0,left:0,right:0,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 12px'}}>
+        {/* Hamburger — mobile only */}
+        <button
+          className="mobile-menu-btn"
+          onClick={onOpenSidebar}
+          title="Open sidebar"
+          style={{width:34,height:34,borderRadius:9,border:'none',background:'transparent',color:'#71717a',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',transition:'all .14s'}}
+          onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,255,255,0.07)';e.currentTarget.style.color='#ececec'}}
+          onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color='#71717a'}}
+        >
+          <i className="ri-menu-line" style={{fontSize:19}}/>
+        </button>
+
+        {/* Incognito toggle */}
+        <button onClick={onToggleIncognito}
+          title={incognito?'Incognito ON':'Enable Incognito'}
+          style={{width:34,height:34,borderRadius:9,border:incognito?'1px solid rgba(255,255,255,0.14)':'1px solid rgba(255,255,255,0.06)',background:incognito?'rgba(255,255,255,0.08)':'transparent',color:incognito?'#d4d4d8':'#3f3f46',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',transition:'all .2s'}}
+          onMouseEnter={e=>{if(!incognito){e.currentTarget.style.background='rgba(255,255,255,0.05)';e.currentTarget.style.color='#71717a'}}}
+          onMouseLeave={e=>{if(!incognito){e.currentTarget.style.background='transparent';e.currentTarget.style.color='#3f3f46'}}}>
+          <i className="ri-spy-line" style={{fontSize:15}}/>
+        </button>
+      </div>
+
+      <div className="welcome-center" style={{display:'flex',flexDirection:'column',alignItems:'center',marginBottom:20,textAlign:'center',marginTop:'13rem'}}>
+        <h1 className="welcome-title" style={{fontSize:70,fontWeight:200,color:'#ececec',letterSpacing:'-.02em',marginTop:10,marginBottom:2}}>ZErio AI</h1>
+        <p className="welcome-subtitle" style={{color:'#3f3f46',fontSize:13}}>Smart answers, instantly</p>
         {incognito && (
           <div style={{display:'flex',alignItems:'center',gap:5,marginTop:8,padding:'4px 10px',borderRadius:20,background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.06)'}}>
             <i className="ri-spy-line" style={{fontSize:11,color:'#52525b'}}/>
@@ -404,11 +429,11 @@ const WelcomeScreen = ({ onSendMessage, incognito, onToggleIncognito, selectedMo
         <UploadConfirmation message={uploadStatus} />
       </div>
 
-      <div style={{display:'flex',flexWrap:'wrap',gap:7,justifyContent:'center',marginBottom:18,maxWidth:600,width:'100%'}}>
+      <div className="welcome-chips" style={{display:'flex',flexWrap:'wrap',gap:7,justifyContent:'center',marginBottom:18,maxWidth:600,width:'100%'}}>
         {CHIPS.map((c,i)=><ChipButton key={i} icon={c.icon} text={c.text} onClick={()=>onSendMessage({message: c.text, file: null, model: selectedModel})}/>) }
       </div>
 
-      <div style={{width:'100%',maxWidth:600}}>
+      <div className="welcome-suggestions" style={{width:'100%',maxWidth:600}}>
         {SUGGESTIONS.map((s,i)=><SuggestionRow key={i} text={s} onClick={(text)=>onSendMessage({message: text, file: null, model: selectedModel})}/>)}
       </div>
     </div>

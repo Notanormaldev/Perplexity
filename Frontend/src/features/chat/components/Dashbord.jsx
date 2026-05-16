@@ -182,8 +182,8 @@ function Dashboard() {
 
       <div style={{ display: 'flex', height: '100vh' }}>
 
-        {/* Desktop Sidebar */}
-        <div style={{ height: '100vh', overflowY: 'auto' }}>
+        {/* Desktop Sidebar — hidden via CSS on mobile */}
+        <div className="desktop-sidebar" style={{ height: '100vh', overflowY: 'auto' }}>
           <Sidebar
             {...sidebarProps}
             collapsed={sidebarCollapsed}
@@ -191,7 +191,7 @@ function Dashboard() {
           />
         </div>
 
-        {/* Mobile Sidebar */}
+        {/* Mobile Sidebar Overlay */}
         <div
           style={{
             position: 'fixed',
@@ -213,12 +213,13 @@ function Dashboard() {
 
           <div
             style={{
-              width: 260,
+              width: 272,
               height: '100%',
               background: '#131313',
               transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)',
-              transition: 'transform 0.25s ease',
-              overflowY: 'auto'
+              transition: 'transform 0.28s cubic-bezier(.4,0,.2,1)',
+              overflowY: 'auto',
+              boxShadow: mobileOpen ? '4px 0 40px rgba(0,0,0,.7)' : 'none',
             }}
           >
             <Sidebar {...sidebarProps} onClose={() => setMobileOpen(false)} />
@@ -231,11 +232,17 @@ function Dashboard() {
         <RateLimitModal open={!!rateLimitError} onClose={() => setRateLimitError(null)} title={rateLimitError?.title || 'Too Many Requests'} message={rateLimitError?.message || 'You are sending too many requests. Please try again later.'} />
         <IncognitoLeaveModal open={showIncognitoLeave} onConfirm={handleIncognitoLeaveConfirm} onCancel={handleIncognitoLeaveCancel} />
 
-        {/* Main */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {/* Main content */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
           {currentchatid === null || !chats[currentchatid] ? (
-            <WelcomeScreen onSendMessage={onSend}   incognito={incognito}
-  onToggleIncognito={handleToggleIncognito} selectedModel={selectedModel} onModelChange={setSelectedModel} />
+            <WelcomeScreen
+              onSendMessage={onSend}
+              incognito={incognito}
+              onToggleIncognito={handleToggleIncognito}
+              selectedModel={selectedModel}
+              onModelChange={setSelectedModel}
+              onOpenSidebar={() => setMobileOpen(true)}
+            />
           ) : (
             <ChatView
               currentchatId={currentchatid}
@@ -244,6 +251,7 @@ function Dashboard() {
               incognito={incognito}
               selectedModel={selectedModel}
               onModelChange={setSelectedModel}
+              onOpenSidebar={() => setMobileOpen(true)}
             />
           )}
         </div>

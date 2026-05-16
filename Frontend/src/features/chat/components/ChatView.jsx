@@ -40,7 +40,7 @@ const Message = ({ msg, isLatestAI }) => {
 
   if (isUser) return (
     <div style={{display:'flex',justifyContent:'flex-end',marginBottom:10}}>
-      <div style={{maxWidth:'68%',background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.08)',borderRadius:'14px 14px 3px 14px',padding:'9px 14px',color:'#ececec',fontSize:14,lineHeight:1.6}}>
+      <div style={{maxWidth:'80%',background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.08)',borderRadius:'14px 14px 3px 14px',padding:'9px 14px',color:'#ececec',fontSize:14,lineHeight:1.6}}>
         {msg.content.split('\n').filter(line => !line.startsWith('[')).join('\n') || msg.content}
         {msg.fileType && msg.file && (
           <div style={{marginTop:8,paddingTop:8,borderTop:'1px solid rgba(255,255,255,0.1)',display:'flex',alignItems:'center',gap:6}}>
@@ -72,7 +72,7 @@ const Message = ({ msg, isLatestAI }) => {
   )
 }
 
-export const ChatView = ({ currentchatId, chats, onSend, incognito, selectedModel, onModelChange }) => {
+export const ChatView = ({ currentchatId, chats, onSend, incognito, selectedModel, onModelChange, onOpenSidebar }) => {
   const { loading } = useSelector(s => s.chat)
   const chat = chats[currentchatId]
   const messages = chat?.messages || []
@@ -83,7 +83,20 @@ export const ChatView = ({ currentchatId, chats, onSend, incognito, selectedMode
 
   return (
     <div style={{flex:1,display:'flex',flexDirection:'column',height:'100dvh',overflow:'hidden',background:'#0d0d0d'}}>
-      <div style={{padding:'10px 18px',borderBottom:'1px solid rgba(255,255,255,0.06)',display:'flex',alignItems:'center',flexShrink:0,gap:8}}>
+      {/* Header */}
+      <div style={{padding:'10px 14px',borderBottom:'1px solid rgba(255,255,255,0.06)',display:'flex',alignItems:'center',flexShrink:0,gap:8}}>
+        {/* Hamburger — mobile only */}
+        <button
+          className="mobile-menu-btn"
+          onClick={onOpenSidebar}
+          title="Open sidebar"
+          style={{width:32,height:32,borderRadius:8,border:'none',background:'transparent',color:'#71717a',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,transition:'all .14s'}}
+          onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,255,255,0.07)';e.currentTarget.style.color='#ececec'}}
+          onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color='#71717a'}}
+        >
+          <i className="ri-menu-line" style={{fontSize:18}}/>
+        </button>
+
         {incognito && (
           <div style={{width:20,height:20,borderRadius:6,background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.07)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
             <i className="ri-spy-line" style={{fontSize:11,color:'#3f3f46'}}/>
@@ -96,7 +109,7 @@ export const ChatView = ({ currentchatId, chats, onSend, incognito, selectedMode
               <span style={{color:'#3f3f46',fontSize:12,marginLeft:4}}>Thinking…</span>
             </div>
           ) : (
-            <h2 style={{color:'#ececec',fontSize:13.5,fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{chat.title}</h2>
+            <h2 className="chat-header-title" style={{color:'#ececec',fontSize:13.5,fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{chat.title}</h2>
           )}
         </div>
       </div>
@@ -118,3 +131,4 @@ export const ChatView = ({ currentchatId, chats, onSend, incognito, selectedMode
     </div>
   )
 }
+

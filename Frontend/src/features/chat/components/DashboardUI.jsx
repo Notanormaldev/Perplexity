@@ -30,8 +30,21 @@ export const GlobalStyles = () => (
     .ai-msg th,.ai-msg td{padding:7px 12px;border:1px solid rgba(255,255,255,0.07);text-align:left}
     .ai-msg th{background:rgba(255,255,255,0.04);color:#ececec;font-weight:500}
     .ai-msg hr{border:none;border-top:1px solid rgba(255,255,255,0.07);margin:14px 0}
-    @media(max-width:768px){.desktop-sidebar{display:none!important}.mobile-topbar{display:flex!important}}
-    @media(min-width:769px){.mobile-topbar{display:none!important}}
+    @media(max-width:768px){
+      .desktop-sidebar{display:none!important}
+      .mobile-topbar{display:flex!important}
+      .welcome-suggestions{display:none!important}
+      .welcome-chips{flex-wrap:wrap;gap:6px!important;justify-content:center!important}
+      .welcome-title{font-size:42px!important;margin-top:5rem!important}
+      .welcome-subtitle{font-size:12px!important}
+      .welcome-center{margin-top:0!important;margin-bottom:14px!important}
+      .chat-header-title{font-size:12.5px!important}
+      .chat-input-area{padding:0 10px 12px!important}
+    }
+    @media(min-width:769px){
+      .mobile-topbar{display:none!important}
+      .mobile-menu-btn{display:none!important}
+    }
   `}</style>
 )
 
@@ -57,7 +70,7 @@ export const ConfirmModal = ({ open, title, message, confirmText='Confirm', onCo
   return (
     <div style={{position:'fixed',inset:0,zIndex:350,display:'flex',alignItems:'center',justifyContent:'center'}}>
       <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,.8)',backdropFilter:'blur(6px)'}} onClick={onCancel}/>
-      <div style={{position:'relative',background:'#1c1c1c',border:'1px solid rgba(255,255,255,0.1)',borderRadius:16,padding:'22px',width:'100%',maxWidth:340,margin:'0 20px',boxShadow:'0 25px 60px rgba(0,0,0,.7)',animation:'scaleIn .18s ease'}}>
+      <div style={{position:'relative',background:'#1c1c1c',border:'1px solid rgba(255,255,255,0.1)',borderRadius:16,padding:'22px',width:'calc(100% - 40px)',maxWidth:340,margin:'0 20px',boxShadow:'0 25px 60px rgba(0,0,0,.7)',animation:'scaleIn .18s ease'}}>
         <h3 style={{color:'#ececec',fontSize:16,fontWeight:600,marginBottom:8}}>{title}</h3>
         <p style={{color:'#a1a1aa',fontSize:13,lineHeight:1.55,marginBottom:22}}>{message}</p>
         <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
@@ -74,7 +87,7 @@ export const IncognitoLeaveModal = ({ open, onConfirm, onCancel }) => {
   return (
     <div style={{position:'fixed',inset:0,zIndex:400,display:'flex',alignItems:'center',justifyContent:'center'}}>
       <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,.88)',backdropFilter:'blur(10px)'}} onClick={onCancel}/>
-      <div style={{position:'relative',background:'#161616',border:'1px solid rgba(255,255,255,0.1)',borderRadius:20,padding:'28px 24px',width:'100%',maxWidth:360,margin:'0 20px',boxShadow:'0 30px 80px rgba(0,0,0,.9)',animation:'scaleIn .2s ease',textAlign:'center'}}>
+      <div style={{position:'relative',background:'#161616',border:'1px solid rgba(255,255,255,0.1)',borderRadius:20,padding:'28px 24px',width:'calc(100% - 40px)',maxWidth:360,margin:'0 20px',boxShadow:'0 30px 80px rgba(0,0,0,.9)',animation:'scaleIn .2s ease',textAlign:'center'}}>
         <div style={{width:52,height:52,borderRadius:14,background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.07)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px'}}>
           <i className="ri-spy-line" style={{fontSize:20,color:'#52525b'}}/>
         </div>
@@ -95,7 +108,7 @@ export const RateLimitModal = ({ open, onClose, title, message }) => {
   return (
     <div style={{position:'fixed',inset:0,zIndex:350,display:'flex',alignItems:'center',justifyContent:'center'}}>
       <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,.8)',backdropFilter:'blur(6px)'}} onClick={onClose}/>
-      <div style={{position:'relative',background:'#1c1c1c',border:'1px solid rgba(239,68,68,0.25)',borderRadius:16,padding:'24px',width:'100%',maxWidth:360,margin:'0 20px',boxShadow:'0 25px 60px rgba(0,0,0,.7)',animation:'scaleIn .18s ease'}}>
+      <div style={{position:'relative',background:'#1c1c1c',border:'1px solid rgba(239,68,68,0.25)',borderRadius:16,padding:'24px',width:'calc(100% - 40px)',maxWidth:360,margin:'0 20px',boxShadow:'0 25px 60px rgba(0,0,0,.7)',animation:'scaleIn .18s ease'}}>
         <div style={{width:48,height:48,borderRadius:12,background:'rgba(239,68,68,0.1)',border:'1px solid rgba(239,68,68,0.2)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 14px'}}>
           <i className="ri-alert-line" style={{fontSize:24,color:'#f87171'}}/>
         </div>
