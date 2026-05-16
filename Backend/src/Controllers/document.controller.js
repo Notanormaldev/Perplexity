@@ -15,9 +15,21 @@ export async function uploadDocument(req,res){
    const file = req.file
    const {chatid} = req.params
 
-   // extract text
-   const text = await extractText(file)
+   let text = ""
 
+   if (file.mimetype === "application/pdf" || file.mimetype === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+     text = await extractText(file)
+   } else if (file.mimetype === "application/json") {
+     const raw = fs.readFileSync(file.path, "utf8")
+     try {
+       const parsed = JSON.parse(raw)
+       text = JSON.stringify(parsed, null, 2)
+     } catch {
+       text = raw
+     }
+   } else if (file.mimetype.startsWith("text/") || file.mimetype === "text/csv") {
+     text = fs.readFileSync(file.path, "utf8")
+   }
 
    // save upload as a chat document message so the UI can reflect the action
    await messagemodel.create({

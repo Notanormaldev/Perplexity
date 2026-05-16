@@ -26,3 +26,13 @@ export async function getme(){
    const res= await api.get('api/auth/get-me')
    return res.data
 }
+
+export async function logout(){
+   const res = await api.post('api/auth/logout')
+   return res.data
+}
+
+export async function deleteAccount(){
+   const res = await api.delete('api/auth/delete')
+   return res.data
+}

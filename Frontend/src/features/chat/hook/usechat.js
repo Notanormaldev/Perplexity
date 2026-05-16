@@ -68,6 +68,15 @@ export  const usechat=()=> {
       }))
 
       dispatch(setcurrentchatid(chat._id))
+
+      if (file && !isImage) {
+        try {
+          await uploadDocument({ file, chatid: chat._id })
+        } catch (err) {
+          console.error('Document ingestion failed:', err)
+        }
+      }
+
       dispatch(setloading(false))
      } catch (error) {
       console.error('Error in handlegenraterespons:', error)
@@ -190,6 +199,14 @@ export  const usechat=()=> {
          
          dispatch(addNewmessage({chatid: activeChatId, content: userContent, role: 'user', fileType, file: file.name}))
          dispatch(addNewmessage({chatid: activeChatId, content: data.aimessage.content||'', role: 'ai'}))
+
+         if (!isImage) {
+           try {
+             await uploadDocument({ file, chatid: activeChatId })
+           } catch (err) {
+             console.error('Document ingestion failed:', err)
+           }
+         }
        }
        
        onClearAttachedFile?.()
