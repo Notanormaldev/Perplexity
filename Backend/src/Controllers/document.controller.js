@@ -10,6 +10,9 @@ from "../services/rag.service.js"
 import { createEmbedding }
 from "../services/embedding.service.js"
 
+import { uploadToImageKit }
+from "../services/imagekit.service.js"
+
 export async function uploadDocument(req,res){
 
    const file = req.file
@@ -20,24 +23,30 @@ export async function uploadDocument(req,res){
    if (file.mimetype === "application/pdf" || file.mimetype === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
      text = await extractText(file)
    } else if (file.mimetype === "application/json") {
-     const raw = fs.readFileSync(file.path, "utf8")
      try {
-       const parsed = JSON.parse(raw)
+       const parsed = JSON.parse(file.buffer.toString("utf8"))
        text = JSON.stringify(parsed, null, 2)
      } catch {
-       text = raw
+       text = file.buffer.toString("utf8")
      }
    } else if (file.mimetype.startsWith("text/") || file.mimetype === "text/csv") {
-     text = fs.readFileSync(file.path, "utf8")
+     text = file.buffer.toString("utf8")
    }
+
+   // ✅ Upload to ImageKit — store the public URL instead of a local path
+   const { url: fileUrl } = await uploadToImageKit(
+     file.buffer,
+     file.originalname,
+     "/chats/documents"
+   )
 
    // save upload as a chat document message so the UI can reflect the action
    await messagemodel.create({
       chat: chatid,
       role: "user",
       content: `Uploaded document ${file.originalname}`,
-      file: file.path,
-      fileType: file.mimetype === "application/pdf" ? "pdf" : "text"
+      file: fileUrl,
+      fileType: file.mimetype === "application/pdf" ? "pdf" : "document"
    })
 
    // chunks
@@ -63,4 +72,4 @@ export async function uploadDocument(req,res){
 
       msg:"Document uploaded successfully"
    })
-}
+}

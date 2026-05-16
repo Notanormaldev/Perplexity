@@ -1,26 +1,23 @@
-import fs from "fs";
 import OpenAI from "openai";
 import "dotenv/config";
 
 const client = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
-
   baseURL: "https://openrouter.ai/api/v1",
 });
 
 const IMAGE_SYSTEM_PROMPT = `You are an AI assistant that describes images clearly and concisely. Use the image content to answer the user's prompt and avoid making unsupported assumptions.`
 
-export async function generateImageMessage(filepath, prompt = "Describe this image in detail") {
-  if (!filepath) {
-    throw new Error('No image file path provided')
+// ✅ Now accepts buffer directly (from multer memoryStorage) instead of file path
+export async function generateImageMessage(buffer, mimetype, prompt = "Describe this image in detail") {
+  if (!buffer) {
+    throw new Error('No image buffer provided')
   }
 
-  const image = fs.readFileSync(filepath)
-  const base64 = image.toString("base64")
+  const base64 = buffer.toString("base64")
 
   const response = await client.chat.completions.create({
     model: "openrouter/auto",
-
     messages: [
       {
         role: "system",
@@ -36,7 +33,7 @@ export async function generateImageMessage(filepath, prompt = "Describe this ima
           {
             type: "image_url",
             image_url: {
-              url: `data:image/png;base64,${base64}`,
+              url: `data:${mimetype};base64,${base64}`,
             },
           },
         ],
@@ -45,4 +42,4 @@ export async function generateImageMessage(filepath, prompt = "Describe this ima
   });
 
   return response.choices[0].message.content;
-}
+}

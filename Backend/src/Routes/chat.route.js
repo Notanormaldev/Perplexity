@@ -5,7 +5,7 @@ import { upload } from "../middleware/upload.middleware.js";
 import { uploadDocument } from "../Controllers/document.controller.js";
 import { imageController } from "../Controllers/image.controller.js";
 import { generateMessageStream, getAvailableModels } from "../services/Ai.service.js"
-import fs from "fs"
+import { uploadToImageKit } from "../services/imagekit.service.js"
 const chatRouter = Router()
 
 
@@ -38,18 +38,21 @@ chatRouter.post('/image/describe/stream/:chatid', authuser, upload.single('file'
 
     const messagemodel = (await import("../model/message.model.js")).default
 
-    // User message save with image
+    // ✅ Upload image to ImageKit
+    const { url: imageUrl } = await uploadToImageKit(req.file.buffer, req.file.originalname, "/chats/images")
+
+    // User message save — store ImageKit URL
     await messagemodel.create({
       chat: chatid,
       role: "user",
       content: message || "Describe this image",
-      file: req.file.path,
+      file: imageUrl,
       fileType: "image",
     })
 
-    // Stream the AI response
+    // Stream the AI response — pass buffer + mimetype
     const { generateImageMessage } = await import("../services/image.service.js")
-    const result = await generateImageMessage(req.file.path, message || "Describe this image in detail")
+    const result = await generateImageMessage(req.file.buffer, req.file.mimetype, message || "Describe this image in detail")
 
     // For now, send the complete result (we can make it truly streaming later)
     res.write(`data: ${JSON.stringify({ text: result, done: true })}\n\n`)
@@ -94,8 +97,7 @@ chatRouter.post('/message/stream', authuser, upload.single('file'), async (req, 
     const activeChatId = chatid || chat._id
     const messagemodel = (await import("../model/message.model.js")).default
 
-    // File handle
-    const filePath = req.file ? req.file.path : null
+    // ✅ Determine file type
     const fileType = req.file
       ? req.file.mimetype.startsWith("image/") ? "image"
       : req.file.mimetype === "application/pdf" ? "pdf"
@@ -104,21 +106,24 @@ chatRouter.post('/message/stream', authuser, upload.single('file'), async (req, 
       : "text"
       : "text"
 
+    // ✅ Extract text from buffer (no disk read)
     let fileText = ""
     if (req.file && fileType !== "image") {
       if (fileType === "pdf" || fileType === "document") {
         const { extractText } = await import("../services/file.service.js")
         fileText = await extractText(req.file)
       }
-      if (!fileText && req.file.mimetype.startsWith("text/")) {
-        fileText = fs.readFileSync(req.file.path, "utf8")
-      }
-      if (!fileText && req.file.mimetype === "application/json") {
-        fileText = fs.readFileSync(req.file.path, "utf8")
-      }
-      if (!fileText && req.file.mimetype === "text/csv") {
-        fileText = fs.readFileSync(req.file.path, "utf8")
-      }
+      if (!fileText && req.file.mimetype.startsWith("text/")) fileText = req.file.buffer.toString("utf8")
+      if (!fileText && req.file.mimetype === "application/json") fileText = req.file.buffer.toString("utf8")
+      if (!fileText && req.file.mimetype === "text/csv") fileText = req.file.buffer.toString("utf8")
+    }
+
+    // ✅ Upload to ImageKit — get persistent CDN URL
+    let filePath = null
+    if (req.file) {
+      const folder = fileType === "image" ? "/chats/images" : "/chats/documents"
+      const { url } = await uploadToImageKit(req.file.buffer, req.file.originalname, folder)
+      filePath = url
     }
 
     // User message save
@@ -132,10 +137,10 @@ chatRouter.post('/message/stream', authuser, upload.single('file'), async (req, 
 
     const messages = await messagemodel.find({ chat: activeChatId })
 
-    // Image base64
+    // ✅ Image base64 from buffer
     let imageBase64 = null, imageMimetype = null
     if (req.file && fileType === "image") {
-      imageBase64 = fs.readFileSync(req.file.path).toString("base64")
+      imageBase64 = req.file.buffer.toString("base64")
       imageMimetype = req.file.mimetype
     }
 

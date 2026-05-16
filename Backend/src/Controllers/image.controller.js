@@ -1,6 +1,6 @@
 import messagemodel from "../model/message.model.js";
-
 import { generateImageMessage } from "../services/image.service.js";
+import { uploadToImageKit } from "../services/imagekit.service.js";
 
 export async function imageController(req, res) {
   try {
@@ -11,17 +11,24 @@ export async function imageController(req, res) {
       return res.status(400).json({ message: "Image file is required" })
     }
 
-    // USER SAVE
+    // ✅ Upload image to ImageKit — get persistent CDN URL
+    const { url: imageUrl } = await uploadToImageKit(
+      req.file.buffer,
+      req.file.originalname,
+      "/chats/images"
+    )
+
+    // USER SAVE — store ImageKit URL (not local path)
     await messagemodel.create({
       chat: chatid,
       role: "user",
       content: prompt,
-      file: req.file.path,
+      file: imageUrl,
       fileType: "image",
     })
 
-    // AI CALL (SERVICE)
-    const result = await generateImageMessage(req.file.path, prompt)
+    // AI CALL — pass buffer + mimetype directly
+    const result = await generateImageMessage(req.file.buffer, req.file.mimetype, prompt)
 
     // AI SAVE
     await messagemodel.create({
@@ -39,4 +46,4 @@ export async function imageController(req, res) {
       message: err.message,
     })
   }
-}
+}

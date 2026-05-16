@@ -1,9 +1,9 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { usechat } from '../hook/usechat'
 import { useauth } from '../../auth/hook/useauth'
-import { setcurrentchatid, setchats } from '../chat.slice'
+import { setcurrentchatid, setchats, removeChat } from '../chat.slice'
 import { Sidebar, SearchModal, HistoryModal } from './ChatSidebar'
 import { ChatView } from './ChatView'
 import { WelcomeScreen } from './ChatInput'
@@ -21,10 +21,73 @@ function Dashboard() {
   const [historyOpen, setHistoryOpen] = useState(false)
   const [incognito, setIncognito] = useState(false)
   const [rateLimitError, setRateLimitError] = useState(null)
+  const [selectedModel, setSelectedModel] = useState('gemini')
+  const [showIncognitoLeave, setShowIncognitoLeave] = useState(false)
+
+  // Store the action to execute after incognito leave confirmation
+  const pendingActionRef = useRef(null)
+  // Always track the latest currentchatid so confirm handler never has a stale value
+  const currentChatIdRef = useRef(currentchatid)
+  currentChatIdRef.current = currentchatid
 
   const { intializesocketconnection, handlegenraterespons, handleloadchats, handleloadmessages, handledeletechat } = usechat()
   const { handleLogout, handleDeleteAccount } = useauth()
   const navigate = useNavigate()
+
+  // Check if we should intercept navigation (incognito ON + active chat)
+  const shouldInterceptNavigation = () => {
+    return incognito && currentchatid !== null
+  }
+
+  // Show incognito leave popup and queue the action for after confirmation
+  const interceptWithIncognitoPopup = (action) => {
+    pendingActionRef.current = action
+    setShowIncognitoLeave(true)
+  }
+
+  // On confirm: delete incognito chat, leave incognito, execute queued action
+  const handleIncognitoLeaveConfirm = () => {
+    setShowIncognitoLeave(false)
+    const chatToDelete = currentChatIdRef.current
+
+    // Remove from Redux immediately
+    if (chatToDelete) {
+      dispatch(removeChat(chatToDelete))
+      dispatch(setcurrentchatid(null))
+      // Fire-and-forget API delete, then reload chats to guarantee clean state
+      handledeletechat({ chatid: chatToDelete })
+        .then(() => handleloadchats())
+        .catch(err => console.error('Failed to delete incognito chat:', err))
+    }
+
+    setIncognito(false)
+
+    // Execute the pending action
+    if (pendingActionRef.current) {
+      pendingActionRef.current()
+      pendingActionRef.current = null
+    }
+  }
+
+  const handleIncognitoLeaveCancel = () => {
+    setShowIncognitoLeave(false)
+    pendingActionRef.current = null
+  }
+
+  // Toggle incognito on/off
+  const handleToggleIncognito = () => {
+    if (incognito) {
+      if (currentchatid) {
+        // Has active chat — show leave popup
+        interceptWithIncognitoPopup(null)
+      } else {
+        // No active chat — just turn off
+        setIncognito(false)
+      }
+    } else {
+      setIncognito(true)
+    }
+  }
 
   useEffect(() => {
     intializesocketconnection()
@@ -32,6 +95,15 @@ function Dashboard() {
   }, [])
 
   const onSelectChat = (chatId) => {
+    if (shouldInterceptNavigation()) {
+      interceptWithIncognitoPopup(() => {
+        dispatch(setcurrentchatid(chatId))
+        if (chats[chatId]?.messages?.length === 0) {
+          handleloadmessages({ chatid: chatId })
+        }
+      })
+      return
+    }
     dispatch(setcurrentchatid(chatId))
     if (chats[chatId]?.messages?.length === 0) {
       handleloadmessages({ chatid: chatId })
@@ -40,6 +112,10 @@ function Dashboard() {
   }
 
   const onNewChat = () => {
+    if (shouldInterceptNavigation()) {
+      interceptWithIncognitoPopup(null)
+      return
+    }
     dispatch(setcurrentchatid(null))
     setMobileOpen(false)
   }
@@ -61,9 +137,23 @@ function Dashboard() {
 
   const onDelete = async (chatId) => {
     await handledeletechat({ chatid: chatId })
-    const updated = { ...chats }
-    delete updated[chatId]
-    dispatch(setchats(updated))
+    dispatch(removeChat(chatId))
+  }
+
+  const onHistoryOpen = () => {
+    if (shouldInterceptNavigation()) {
+      interceptWithIncognitoPopup(() => setHistoryOpen(true))
+      return
+    }
+    setHistoryOpen(true)
+  }
+
+  const onSearchOpen = () => {
+    if (shouldInterceptNavigation()) {
+      interceptWithIncognitoPopup(() => setSearchOpen(true))
+      return
+    }
+    setSearchOpen(true)
   }
 
   const sidebarProps = {
@@ -72,9 +162,10 @@ function Dashboard() {
     onSelectChat,
     onDeleteChat: onDelete,
     onNewChat,
-    onHistoryOpen: () => setHistoryOpen(true),
-    onSearchOpen: () => setSearchOpen(true),
+    onHistoryOpen,
+    onSearchOpen,
     user,
+    hideChatId: incognito ? currentchatid : undefined,
     onLogout: async () => {
       await handleLogout()
       navigate('/login')
@@ -137,17 +228,22 @@ function Dashboard() {
         {/* Modals */}
         <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} chats={chats} onSelectChat={onSelectChat} onNewChat={onNewChat} />
         <HistoryModal open={historyOpen} onClose={() => setHistoryOpen(false)} chats={chats} onSelectChat={onSelectChat} onDeleteChat={onDelete} />
-        <RateLimitModal open={!!rateLimitError} onClose={() => setRateLimitError(null)} />
+        <RateLimitModal open={!!rateLimitError} onClose={() => setRateLimitError(null)} title={rateLimitError?.title || 'Too Many Requests'} message={rateLimitError?.message || 'You are sending too many requests. Please try again later.'} />
+        <IncognitoLeaveModal open={showIncognitoLeave} onConfirm={handleIncognitoLeaveConfirm} onCancel={handleIncognitoLeaveCancel} />
 
         {/* Main */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          {currentchatid === null ? (
-            <WelcomeScreen onSendMessage={onSend} />
+          {currentchatid === null || !chats[currentchatid] ? (
+            <WelcomeScreen onSendMessage={onSend}   incognito={incognito}
+  onToggleIncognito={handleToggleIncognito} selectedModel={selectedModel} onModelChange={setSelectedModel} />
           ) : (
             <ChatView
               currentchatId={currentchatid}
               chats={chats}
               onSend={onSend}
+              incognito={incognito}
+              selectedModel={selectedModel}
+              onModelChange={setSelectedModel}
             />
           )}
         </div>

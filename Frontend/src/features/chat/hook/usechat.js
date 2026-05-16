@@ -9,13 +9,20 @@ export  const usechat=()=> {
   const currentchatid = useSelector(state=>state.chat.currentchatid)
   const dispatch = useDispatch()
 
-  // ✅ Handle rate limit errors
+  // ✅ Handle rate limit and AI errors
   const handleRateLimitError = (error) => {
     if (error.response?.status === 429) {
       return {
-        title: "Rate Limit Exceeded",
-        message: "Too many requests. You need to upgrade your plan or contact support.",
+        title: "Too Many Requests",
+        message: error.response?.data?.message || "Too many requests. Please try again later.",
         status: 429
+      }
+    }
+    if (error.response?.status === 400) {
+      return {
+        title: "Request Failed",
+        message: error.response?.data?.message || "The AI model returned an error. Please try a different model or rephrase your message.",
+        status: 400
       }
     }
     return null

@@ -26,7 +26,7 @@ const openaiModel = new ChatOpenAI({
 });
 
 const cohereModel = new ChatCohere({
-  model: "command-r",
+  model: "command-r-08-2024",
   apiKey: process.env.COHERE_API_KEY,
 });
 
@@ -171,7 +171,7 @@ export async function generateMessage(message, chatid, imageBase64 = null, image
 
   const selectedModel = getModel(modelName)
   const agent = createReactAgent({ llm: selectedModel, tools: [searchTool], messageModifier: systemMessage })
-  
+
   try {
     const res = await agent.invoke({ messages: mapped })
 

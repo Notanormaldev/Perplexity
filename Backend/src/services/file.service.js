@@ -1,21 +1,18 @@
-import fs from "fs"
-
 import mammoth from "mammoth"
 
 import * as pdfjsLib
 from "pdfjs-dist/legacy/build/pdf.mjs"
 
+// ✅ Now uses file.buffer (multer memoryStorage) — no disk I/O
 export async function extractText(file){
 
-   // PDF
+   // PDF — read from buffer
    if(file.mimetype === "application/pdf"){
 
-      const data = new Uint8Array(
-         fs.readFileSync(file.path)
-      )
+      const data = new Uint8Array(file.buffer)
 
       const pdf =
-      await pdfjsLib.getDocument(data).promise
+      await pdfjsLib.getDocument({ data }).promise
 
       let text = ""
 
@@ -38,7 +35,7 @@ export async function extractText(file){
       return text
    }
 
-   // DOCX
+   // DOCX — read from buffer
    if(
       file.mimetype ===
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -46,12 +43,11 @@ export async function extractText(file){
 
       const result =
       await mammoth.extractRawText({
-
-         path:file.path
+         buffer: file.buffer
       })
 
       return result.value
    }
 
    return ""
-}
+}

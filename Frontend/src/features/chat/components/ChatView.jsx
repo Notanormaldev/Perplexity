@@ -44,9 +44,9 @@ const Message = ({ msg, isLatestAI }) => {
         {msg.content.split('\n').filter(line => !line.startsWith('[')).join('\n') || msg.content}
         {msg.fileType && msg.file && (
           <div style={{marginTop:8,paddingTop:8,borderTop:'1px solid rgba(255,255,255,0.1)',display:'flex',alignItems:'center',gap:6}}>
-            <i className={msg.fileType === 'image' ? 'ri-image-line' : msg.fileType === 'pdf' ? 'ri-file-pdf-line' : 'ri-file-text-line'} style={{fontSize:12,color:'#9ca3af'}}/>
+            <i className={msg.fileType === 'image' ? 'ri-image-line' : msg.fileType === 'pdf' ? 'ri-file-pdf-line' : msg.file?.endsWith('.json') ? 'ri-braces-line' : (msg.file?.endsWith('.docx') || msg.file?.endsWith('.doc')) ? 'ri-file-word-line' : 'ri-file-text-line'} style={{fontSize:12,color:'#9ca3af'}}/>
             <span style={{fontSize:12,color:'#9ca3af'}}>
-              {msg.fileType === 'image' ? '📷 Image' : msg.fileType === 'pdf' ? '📄 PDF' : '📎 Document'} sent
+              {msg.fileType === 'image' ? '📷 Image' : msg.fileType === 'pdf' ? '📄 PDF' : msg.file?.endsWith('.json') ? '📋 JSON' : (msg.file?.endsWith('.docx') || msg.file?.endsWith('.doc')) ? '📄 DOCX' : '📎 Document'} sent
             </span>
           </div>
         )}

@@ -410,7 +410,7 @@ export const HistoryModal = ({ open, onClose, chats, onSelectChat, onDeleteChat 
       <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,.45)',backdropFilter:'blur(3px)'}} onClick={onClose}/>
       <div style={{position:'relative',width:340,height:'100dvh',background:'#1a1a1a',borderRight:'1px solid rgba(255,255,255,0.07)',boxShadow:'4px 0 40px rgba(0,0,0,.6)',animation:'slideRight .22s ease',display:'flex',flexDirection:'column',zIndex:1}}>
         <div style={{padding:'14px 16px',borderBottom:'1px solid rgba(255,255,255,0.07)',display:'flex',alignItems:'center',gap:10,flexShrink:0}}>
-          <i className="ri-time-line" style={{fontSize:16,color:'#71717a'}}/>
+          <i className="ri-history-line" style={{fontSize:16,color:'#71717a'}}/>
           <span style={{color:'#ececec',fontWeight:600,fontSize:14,flex:1}}>Chat History</span>
           <span style={{color:'#3f3f46',fontSize:12}}>{arr.length} chats</span>
           <button onClick={onClose} style={{width:26,height:26,borderRadius:7,border:'none',background:'transparent',color:'#71717a',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>
@@ -526,7 +526,7 @@ export const Sidebar = ({ chats, selectedChatId, onSelectChat, onDeleteChat, onN
         </button>
       </div>
       <div style={{padding:'5px 6px',borderBottom:'1px solid rgba(255,255,255,0.07)',display:'flex',flexDirection:'column',gap:1}}>
-        <NavBtn icon="ri-time-line" label="History" onClick={onHistoryOpen}/>
+        <NavBtn icon="ri-history-line" label="History" onClick={onHistoryOpen}/>
         <NavBtn icon="ri-search-line" label="Search" onClick={onSearchOpen}/>
         <NavBtn icon="ri-add-line" label="New Chat" onClick={onNewChat}/>
       </div>

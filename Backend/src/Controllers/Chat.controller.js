@@ -1,8 +1,8 @@
-import fs from "fs"
 import chatmodel from "../model/chat.model.js"
 import messagemodel from "../model/message.model.js"
 import { generateChatTitle, generateMessage } from "../services/Ai.service.js"
 import { extractText } from "../services/file.service.js"
+import { uploadToImageKit } from "../services/imagekit.service.js"
 
 export async function messageandres(req, res) {
   try {
@@ -20,8 +20,7 @@ export async function messageandres(req, res) {
 
     const activeChatId = chatid || chat._id
 
-    // ✅ File handle karo properly
-    const filePath = req.file ? req.file.path : null
+    // ✅ Determine file type from mimetype
     let fileType = "text"
     if (req.file) {
       if (req.file.mimetype.startsWith("image/")) {
@@ -35,20 +34,29 @@ export async function messageandres(req, res) {
       }
     }
 
+    // ✅ Extract text from buffer (no disk read)
     let fileText = ""
     if (req.file && fileType !== "image") {
       if (fileType === "pdf" || fileType === "document") {
         fileText = await extractText(req.file)
       }
       if (!fileText && req.file.mimetype.startsWith("text/")) {
-        fileText = fs.readFileSync(req.file.path, "utf8")
+        fileText = req.file.buffer.toString("utf8")
       }
       if (!fileText && req.file.mimetype === "application/json") {
-        fileText = fs.readFileSync(req.file.path, "utf8")
+        fileText = req.file.buffer.toString("utf8")
       }
       if (!fileText && req.file.mimetype === "text/csv") {
-        fileText = fs.readFileSync(req.file.path, "utf8")
+        fileText = req.file.buffer.toString("utf8")
       }
+    }
+
+    // ✅ Upload to ImageKit and get persistent URL
+    let filePath = null
+    if (req.file) {
+      const folder = fileType === "image" ? "/chats/images" : "/chats/documents"
+      const { url } = await uploadToImageKit(req.file.buffer, req.file.originalname, folder)
+      filePath = url
     }
 
     // User message save
@@ -63,20 +71,38 @@ export async function messageandres(req, res) {
     // Saare messages fetch karo
     const messages = await messagemodel.find({ chat: activeChatId })
 
-    // ✅ AI call — image base64 bhi bhejo agar file hai
+    // ✅ AI call — image base64 from buffer
     let imageBase64 = null
     let imageMimetype = null
 
     if (req.file && fileType === "image") {
-      imageBase64 = fs.readFileSync(req.file.path).toString("base64")
+      imageBase64 = req.file.buffer.toString("base64")
       imageMimetype = req.file.mimetype
     }
 
-    const result = await generateMessage(messages, activeChatId, imageBase64, imageMimetype, model, fileText)
+    let aiContent
+    try {
+      aiContent = await generateMessage(messages, activeChatId, imageBase64, imageMimetype, model, fileText)
+    } catch (aiErr) {
+      console.error("AI generation failed:", aiErr)
+      const aiStatus = aiErr.status || aiErr.response?.status || aiErr.statusCode
+
+      if (aiStatus === 429 || aiErr.message?.includes("Too many requests") || aiErr.message?.includes("rate limit")) {
+        aiContent = null
+        return res.status(429).json({
+          message: "Too many requests. Please try again later.",
+          error: "RATE_LIMIT_EXCEEDED",
+          chat: await chatmodel.findById(activeChatId)
+        })
+      }
+
+      // For 400 or other AI errors, save a fallback message and return success
+      aiContent = "⚠️ Sorry, I couldn't process your request. The AI model returned an error. Please try a different model or rephrase your message."
+    }
 
     const aimessage = await messagemodel.create({
       chat: activeChatId,
-      content: result,
+      content: aiContent,
       role: "ai",
       file: null,
       fileType: "text"
@@ -89,18 +115,10 @@ export async function messageandres(req, res) {
 
   } catch (err) {
     console.error(err)
-    
-    // Handle 429 Too Many Requests
-    if (err.status === 429 || err.message?.includes("Too many requests")) {
-      return res.status(429).json({ 
-        message: "Too many requests. Please upgrade your plan or contact support.",
-        error: "RATE_LIMIT_EXCEEDED"
-      })
-    }
-    
     res.status(500).json({ message: err.message })
   }
 }
+
 
 
 

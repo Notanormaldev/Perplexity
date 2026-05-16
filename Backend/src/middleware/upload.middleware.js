@@ -1,20 +1,7 @@
 import multer from 'multer'
 
-const storage = multer.diskStorage({
-     destination:function(req,file,cb){
+// ✅ Use memoryStorage — files go to req.file.buffer (no local disk writes)
+// This works on any hosting platform (Render, Railway, Vercel etc.)
+const storage = multer.memoryStorage()
 
-      cb(null,"uploads/")
-   },
-
-   filename:function(req,file,cb){
-
-      cb(
-         null,
-         Date.now()+"-"+file.originalname
-      )
-   }
-})
-
-export const upload = multer({
-   storage
-})
+export const upload = multer({ storage })

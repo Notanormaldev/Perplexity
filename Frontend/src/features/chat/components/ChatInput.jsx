@@ -140,7 +140,7 @@ const AttachMenu = ({ onAttach }) => {
   const opts = [
     {icon:'ri-image-line',label:'Image',accept:'image/png,image/jpeg,image/gif,image/webp'},
     {icon:'ri-file-pdf-line',label:'PDF Document',accept:'application/pdf'},
-    // {icon:'ri-file-word-line',label:'Word / DOCX',accept:'.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'},
+    {icon:'ri-file-word-line',label:'Word / DOCX',accept:'.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'},
     {icon:'ri-braces-line',label:'JSON / Text',accept:'.json,.txt,.csv,application/json,text/plain,text/csv'},
   ]
 
@@ -356,18 +356,19 @@ const WelcomeScreen = ({ onSendMessage, incognito, onToggleIncognito, selectedMo
     const trimmed = value.trim()
     if (!trimmed && !attachedFile) return
     const message = trimmed || (attachedFile?.type.startsWith('image/') ? 'Describe this image' : 'Upload document')
+    const fileToSend = attachedFile
+    setValue('')
+    setAttachedFile(null)
     try {
-      await onSendMessage({ message, file: attachedFile, model: selectedModel })
-      if (attachedFile?.type === 'application/json' || attachedFile?.name?.endsWith('.json')) {
+      await onSendMessage({ message, file: fileToSend, model: selectedModel })
+      if (fileToSend?.type === 'application/json' || fileToSend?.name?.endsWith('.json')) {
         setUploadStatus('JSON file ingested successfully.')
-      } else if (attachedFile) {
+      } else if (fileToSend) {
         setUploadStatus('File uploaded successfully.')
       }
     } catch (err) {
       setUploadStatus('Upload failed. Please try again.')
     }
-    setValue('')
-    setAttachedFile(null)
     window.setTimeout(() => setUploadStatus(''), 3600)
   }
 
@@ -426,19 +427,20 @@ export const ChatInputArea = ({ onSend, disabled, selectedModel, onModelChange }
     const trimmed = value.trim()
     if ((!trimmed && !attachedFile) || disabled) return
     const message = trimmed || (attachedFile?.type.startsWith('image/') ? 'Describe this image' : 'Upload document')
+    const fileToSend = attachedFile
+    setValue('')
+    setAttachedFile(null)
+    if (textareaRef.current) textareaRef.current.style.height = 'auto'
     try {
-      await onSend({ message, file: attachedFile, model: selectedModel })
-      if (attachedFile?.type === 'application/json' || attachedFile?.name?.endsWith('.json')) {
+      await onSend({ message, file: fileToSend, model: selectedModel })
+      if (fileToSend?.type === 'application/json' || fileToSend?.name?.endsWith('.json')) {
         setUploadStatus('JSON file ingested successfully.')
-      } else if (attachedFile) {
+      } else if (fileToSend) {
         setUploadStatus('File uploaded successfully.')
       }
     } catch (err) {
       setUploadStatus('Upload failed. Please try again.')
     }
-    setValue('')
-    setAttachedFile(null)
-    if (textareaRef.current) textareaRef.current.style.height = 'auto'
     window.setTimeout(() => setUploadStatus(''), 3600)
   }
 
