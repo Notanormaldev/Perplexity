@@ -34,6 +34,6 @@ export async function sendEmail({to,html,subject,text}){
     }
 
     const dts=await trasnpoter.sendMail(mailoptions);
-    console.log('email sent',dts);
+    // console.log('email sent',dts);
     
 }

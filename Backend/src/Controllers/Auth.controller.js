@@ -33,7 +33,7 @@ export async function register(req,res){
 
 
 
-    await sendEmail({
+    sendEmail({
         to:email,
       subject: "Welcome to ZErio AI",
 
