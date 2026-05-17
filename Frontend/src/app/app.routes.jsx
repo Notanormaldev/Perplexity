@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom"
-import Register from "../features/auth/pages/Register"
-import Login from "../features/auth/pages/login"
+import Register from "../features/auth/pages/Register.jsx"
+import Login from "../features/auth/pages/Login.jsx"
 
 import Protected from "../features/auth/components/Protected"
 import Dashboard from "../features/chat/components/Dashbord.jsx"
