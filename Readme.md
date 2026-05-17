@@ -1,6 +1,5 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Notanormaldev/ZErio-Ai/main/screenshots/ui.png" alt="ZErio AI Banner" width="100%" style="border-radius:12px"/>
 
 <br/>
 <br/>
