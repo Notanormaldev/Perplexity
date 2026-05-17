@@ -6,7 +6,7 @@ let io;
 export  function initsocket(httpserver){
     io = new Server(httpserver,{
         cors:{
-            origin:'http://localhost:5173',
+            origin:'https://zerio-ai.onrender.com',
             credentials:true
         }
     })

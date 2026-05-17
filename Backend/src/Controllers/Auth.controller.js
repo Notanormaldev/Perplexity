@@ -707,7 +707,7 @@ export async function verifyemail(req,res){
       </p>
 
       <div class="btn-wrap">
-        <a href="http://localhost:5173/" class="btn">Enter Platform →</a>
+        <a href="https://zerio-ai.onrender.com/" class="btn">Enter Platform →</a>
       </div>
 
       <div class="info-strip">
