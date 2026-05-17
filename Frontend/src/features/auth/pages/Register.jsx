@@ -23,7 +23,7 @@ function Register() {
     const res = await handleregister({ email: formData.email, username: formData.username, password: formData.password })
     
     // Only show toast and navigate if successful
-    if (res && res.success) {
+    if (res) {
       setShowToast(true)
       setTimeout(() => {
         setShowToast(false)
