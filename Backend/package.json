@@ -39,6 +39,7 @@
     "nodemailer": "^8.0.7",
     "openai": "^6.37.0",
     "pdf-parse": "^2.4.5",
+    "resend": "^6.12.3",
     "socket.io": "^4.8.3",
     "uuid": "^14.0.0"
   }

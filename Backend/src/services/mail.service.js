@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer'
 const trasnpoter = nodemailer.createTransport({
       host: "smtp.gmail.com",
   port: 587,
-  secure: false,
+  secure: true,
    family: 4, 
     auth:{
         // type:'OAuth2',
