@@ -320,7 +320,7 @@ html: `<!DOCTYPE html>
     res.status(200).json({
         msg:"created sucessfully",
         user:user,
-        sucess:true
+        success:true
     })
 
 
