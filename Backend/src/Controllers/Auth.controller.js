@@ -356,7 +356,11 @@ export async function verifyemail(req,res){
       username: user.username
     }, process.env.JWT)
 
-    res.cookie('token', loginToken)
+    res.cookie("token", loginToken, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
+});
 
     const html =  `<!DOCTYPE html>
 <html lang="en">
@@ -788,7 +792,11 @@ export async function login(req,res){
     username:user.username
  },process.env.JWT)
 
- res.cookie('token',token)
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
+});
 
  res.status(200).json({
     msg:"login sucess",

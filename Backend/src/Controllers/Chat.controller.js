@@ -20,7 +20,7 @@ export async function messageandres(req, res) {
 
     const activeChatId = chatid || chat._id
 
-    // ✅ Determine file type from mimetype
+    //  Determine file type from mimetype
     let fileType = "text"
     if (req.file) {
       if (req.file.mimetype.startsWith("image/")) {
@@ -34,7 +34,7 @@ export async function messageandres(req, res) {
       }
     }
 
-    // ✅ Extract text from buffer (no disk read)
+    // Extract text from buffer (no disk read)
     let fileText = ""
     if (req.file && fileType !== "image") {
       if (fileType === "pdf" || fileType === "document") {
@@ -51,7 +51,7 @@ export async function messageandres(req, res) {
       }
     }
 
-    // ✅ Upload to ImageKit and get persistent URL
+    //  Upload to ImageKit and get persistent URL
     let filePath = null
     if (req.file) {
       const folder = fileType === "image" ? "/chats/images" : "/chats/documents"
@@ -71,7 +71,7 @@ export async function messageandres(req, res) {
     // Saare messages fetch karo
     const messages = await messagemodel.find({ chat: activeChatId })
 
-    // ✅ AI call — image base64 from buffer
+    // AI call — image base64 from buffer
     let imageBase64 = null
     let imageMimetype = null
 

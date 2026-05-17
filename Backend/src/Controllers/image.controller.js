@@ -11,14 +11,13 @@ export async function imageController(req, res) {
       return res.status(400).json({ message: "Image file is required" })
     }
 
-    // ✅ Upload image to ImageKit — get persistent CDN URL
+    
     const { url: imageUrl } = await uploadToImageKit(
       req.file.buffer,
       req.file.originalname,
       "/chats/images"
     )
 
-    // USER SAVE — store ImageKit URL (not local path)
     await messagemodel.create({
       chat: chatid,
       role: "user",
@@ -27,10 +26,9 @@ export async function imageController(req, res) {
       fileType: "image",
     })
 
-    // AI CALL — pass buffer + mimetype directly
+   
     const result = await generateImageMessage(req.file.buffer, req.file.mimetype, prompt)
 
-    // AI SAVE
     await messagemodel.create({
       chat: chatid,
       role: "ai",
@@ -46,4 +44,4 @@ export async function imageController(req, res) {
       message: err.message,
     })
   }
-}
+}
