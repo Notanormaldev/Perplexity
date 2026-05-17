@@ -1,6 +1,6 @@
+import { sendEmail } from "../services/mail.service.js"
 import redis from "../config/cache.js"
 import usermodel from "../model/user.model.js"
-import { sendEmail } from "../services/mail.service.js"
 import jwt from 'jsonwebtoken'
 
 export async function register(req,res){
