@@ -53,10 +53,10 @@ Switch between the world's most powerful AI models in one click:
 | Model | Provider |
 |-------|----------|
 | Gemini 1.5 Pro / Flash | Google |
-| GPT-4o / GPT-4 Turbo | OpenAI |
-| Mistral Large | Mistral AI |
-| Command R+ | Cohere |
-| DeepSeek V3 | DeepSeek |
+| GPT-4o / GPT-3.5 | OpenAI |
+| Mistral Medium | Mistral AI |
+| Command R | Cohere |
+| DeepSeek V1 | DeepSeek |
 
 ### 🧠 RAG — Document Intelligence
 Upload your files and chat with them directly. ZErio AI parses and understands:
