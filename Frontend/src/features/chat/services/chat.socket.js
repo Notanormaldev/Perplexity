@@ -10,7 +10,7 @@ export const intializesocketconnection=()=>{
 
 
     socket.on('connect',()=>{
-        console.log("connected sucessfully on client side");
         
+
     })
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { LogoIcon, IconBtn, ConfirmModal } from './DashboardUI'
 
 
@@ -122,11 +123,13 @@ const SettingsModal = ({
             position: 'relative',
             width: '100%',
             maxWidth: 440,
+            maxHeight: 'calc(100dvh - 40px)',
+            overflowY: 'auto',
+            overflowX: 'hidden',
             background: '#151515',
             border: '1px solid rgba(255,255,255,0.09)',
             borderRadius: '20px',
             boxShadow: '0 25px 50px rgba(0,0,0,.5)',
-            overflow: 'hidden',
             animation: 'scaleIn .18s ease'
           }}
         >
@@ -216,7 +219,7 @@ const SettingsModal = ({
         confirmText="Logout"
         onConfirm={() => {
           setShowLogout(false)
-          onLogout?.()   // ✅ FIX (no crash)
+          onLogout?.()
           onClose()
         }}
         onCancel={() => setShowLogout(false)}
@@ -231,7 +234,7 @@ const SettingsModal = ({
         danger
         onConfirm={() => {
           setShowDelete(false)
-          onDeleteAccount?.()   // ✅ FIX
+          onDeleteAccount?.()
           onClose()
         }}
         onCancel={() => setShowDelete(false)}
@@ -245,9 +248,10 @@ export default SettingsModal
 const AboutModal = ({ open, onClose }) => {
   if (!open) return null
   return (
+    
     <div style={{position:'fixed',inset:0,zIndex:100,display:'flex',alignItems:'center',justifyContent:'center',padding:'20px'}}>
       <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,.75)',backdropFilter:'blur(6px)'}} onClick={onClose}/>
-      <div style={{position:'relative',width:'100%',maxWidth:340,background:'#151515',border:'1px solid rgba(255,255,255,0.09)',borderRadius:18,boxShadow:'0 25px 60px rgba(0,0,0,.7)',overflow:'hidden',animation:'scaleIn .18s ease'}}>
+      <div style={{position:'relative',width:'100%',maxWidth:340,maxHeight:'calc(100dvh - 40px)',overflowY:'auto',overflowX:'hidden',background:'#151515',border:'1px solid rgba(255,255,255,0.09)',borderRadius:18,boxShadow:'0 25px 60px rgba(0,0,0,.7)',animation:'scaleIn .18s ease'}}>
         <div style={{padding:'26px 22px 22px',textAlign:'center'}}>
           <div style={{width:58,height:58,margin:'0 auto 4px',  borderRadius:16,background:'rgba(255,255,255,0.00)',display:'flex',alignItems:'center',justifyContent:'center'}}><LogoIcon size={36}/></div>
           <h2 style={{color:'#ececec',fontWeight:200,fontSize:20,marginBottom:4}}>ZErio AI</h2>
@@ -255,7 +259,7 @@ const AboutModal = ({ open, onClose }) => {
           <p style={{color:'#52525b',fontSize:12,marginBottom:4}}>v1.0.0 </p>
           <p style={{color:'#a1a1aa',fontSize:13,lineHeight:1.65,marginBottom:18}}>Zerio combines powerful LLMs with real-time internet access to deliver accurate, up-to-date answers.</p>
           <div style={{display:'flex',flexWrap:'wrap',gap:5,justifyContent:'center',marginBottom:18}}>
-            {['React','Node.js','Express.js','MongoDB','Socket.io','RAG','Tavliy','LLMS','Imagekit'].map(t=>(
+            {['React','Node.js','Express.js','MongoDB','Redis','Socket.io','RAG','Tavliy','Langchain','LLMS','Imagekit'].map(t=>(
               <span key={t} style={{fontSize:11,padding:'3px 9px',borderRadius:6,background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.08)',color:'#a1a1aa'}}>{t}</span>
             ))}
           </div>
@@ -568,12 +572,17 @@ export const Sidebar = ({ chats, selectedChatId, onSelectChat, onDeleteChat, onN
           </>
         )}
       </div>
-      <SettingsModal  open={settingsOpen} 
-  onClose={() => setSettings(false)} 
-  user={user}
-  onLogout={onLogout}
-  onDeleteAccount={onDeleteAccount}/>
-      <AboutModal open={aboutOpen} onClose={() => setAbout(false)}/>
+      {typeof document !== 'undefined' && createPortal(
+        <>
+          <SettingsModal  open={settingsOpen} 
+            onClose={() => setSettings(false)} 
+            user={user}
+            onLogout={onLogout}
+            onDeleteAccount={onDeleteAccount}/>
+          <AboutModal open={aboutOpen} onClose={() => setAbout(false)}/>
+        </>,
+        document.body
+      )}
     </div>
   )
 }

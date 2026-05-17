@@ -7,7 +7,7 @@ async function validate(req,res,next){
     if(results.isEmpty()){
        return next()
     }
-    res.status(200).json({
+    res.status(400).json({
         err:results.array()
     })
 }

@@ -41,6 +41,8 @@ export const GlobalStyles = () => (
       .chat-header-title{font-size:12.5px!important}
       .chat-input-area{padding:0 10px 12px!important}
     }
+      @media(min-width:769px){.mobile-menu-btn{display:none!important}}
+@media(max-width:768px){.mobile-menu-btn{display:flex!important}}
     @media(min-width:769px){
       .mobile-topbar{display:none!important}
       .mobile-menu-btn{display:none!important}

@@ -12,7 +12,7 @@ export async function getAvailableModels(){
         const res = await api.get('/api/chats/models')
         return res.data
     } catch (error) {
-        console.log('getAvailableModels error:', error)
+        console.error('getAvailableModels error:', error)
         throw error
     }
 }
@@ -32,7 +32,7 @@ export async function genrateresponse({message, chatid, model = "gemini", file =
         })
         return res.data
     } catch (error) {
-        console.log('genrateresponse error:', error)
+        console.error('genrateresponse error:', error)
         throw error
     }
 }
@@ -42,7 +42,7 @@ export async function getchats(){
         const res = await api.get('/api/chats/')
         return res.data
     } catch (error) {
-        console.log('getchats error:', error)
+        console.error('getchats error:', error)
         throw error
     }
 }
@@ -52,7 +52,7 @@ export async function getmessages({chatid}){
         const res = await api.get(`/api/chats/messages/${chatid}`)
         return res.data
     } catch (error) {
-        console.log('getmessages error:', error)
+        console.error('getmessages error:', error)
         throw error
     }
 }
@@ -62,7 +62,7 @@ export async function deletechat({chatid}){
         const res = await api.delete(`/api/chats/delete/${chatid}`)
         return res.data
     } catch (error) {
-        console.log(error)
+        console.error(error)
         throw error
     }
 }
@@ -77,7 +77,7 @@ export async function sendFileMessage({file, chatid, message}){
         const res = await api.post('/api/chats/message', data)
         return res.data
     } catch (error) {
-        console.log('sendFileMessage error:', error)
+        console.error('sendFileMessage error:', error)
         throw error
     }
 }
@@ -90,7 +90,7 @@ export async function uploadDocument({file, chatid}){
         const res = await api.post(`/api/chats/upload/${chatid}`, data)
         return res.data
     } catch (error) {
-        console.log('uploadDocument error:', error)
+        console.error('uploadDocument error:', error)
         throw error
     }
 }
@@ -104,7 +104,7 @@ export async function describeImage({file, chatid, message}){
         const res = await api.post(`/api/chats/image/describe/${chatid}`, data)
         return res.data
     } catch (error) {
-        console.log('describeImage error:', error)
+        console.error('describeImage error:', error)
         throw error
     }
 }
@@ -157,7 +157,7 @@ export async function describeImageStream({file, chatid, message, onChunk}) {
             }
         }
     } catch (error) {
-        console.log('describeImageStream error:', error)
+        console.error('describeImageStream error:', error)
         throw error
     }
 }

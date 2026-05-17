@@ -22,9 +22,7 @@ function Login() {
   await handlelogin(formData)
   navigate('/')
 
-    
-    // console.log('Login data:', formData.email)
-    
+
    
   
   }

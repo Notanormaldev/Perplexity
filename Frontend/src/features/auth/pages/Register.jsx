@@ -7,37 +7,66 @@ import { useSelector } from 'react-redux'
 
 function Register() {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' })
+  const [showToast, setShowToast] = useState(false)
 
-   const {user,loading} = useSelector(state=>state.auth)
+  const { user, loading, error } = useSelector(state => state.auth)
 
   const handleChange = (event) => {
     const { name, value } = event.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
   const navigate = useNavigate()
-  const {handleregister} = useauth()
-async function handleSubmit (event) {
-    event.preventDefault()
-   handleregister(formData.email,formData.username,formData.password)
-    navigate('/')  
-
-
-    // console.log('Register data:', formData)
+  const { handleregister } = useauth()
   
+  async function handleSubmit(event) {
+    event.preventDefault()
+    const res = await handleregister({ email: formData.email, username: formData.username, password: formData.password })
+    
+    // Only show toast and navigate if successful
+    if (res && res.success) {
+      setShowToast(true)
+      setTimeout(() => {
+        setShowToast(false)
+        navigate('/login')
+      }, 4000)
+    }
   }
-    if(user && !loading ){
-  return  <Navigate to='/'/>
- }
+
+  if (user && !loading) {
+    return <Navigate to='/' />
+  }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center px-4 py-10">
-      <Bg/>
+    <main className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center px-4 py-10 relative overflow-hidden">
+      {showToast && (
+        <div 
+          className="fixed top-8 right-8 z-50 bg-[#0f0f0f] border border-slate-800 px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-4"
+          style={{ animation: "slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}
+        >
+          <div className="bg-green-500/10 p-2.5 rounded-full flex items-center justify-center">
+            <i className="ri-mail-send-line text-green-500 text-xl"></i>
+          </div>
+          <div className="pr-4">
+            <h4 className="font-semibold text-slate-200 text-sm tracking-wide">Verification Sent</h4>
+            <p className="text-xs text-slate-400 mt-0.5">Please check your inbox</p>
+          </div>
+          <style>
+            {`
+              @keyframes slideIn {
+                from { transform: translateX(120%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+              }
+            `}
+          </style>
+        </div>
+      )}
+      <Bg />
       <h1 className='text-white absolute left-1 top-1 font-light font-stretch-50% text-3xl mask-b-from-neutral-50 font-family:'><i class="ri-ancient-gate-line"></i>  ZErio Ai</h1>
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md relative z-10">
         <div className="rounded-[32px] border border-slate-800 bg-black-900/95 p-8 shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
-         <div className='font-extrabold mb-5 font-stretch-50% text-4xl  mask-b-from-neutral-50 w-[10%] m-auto'>
-         <i class="ri-ancient-gate-line "></i> 
-       </div>
+          <div className='font-extrabold mb-5 font-stretch-50% text-4xl  mask-b-from-neutral-50 w-[10%] m-auto'>
+            <i class="ri-ancient-gate-line "></i>
+          </div>
           <div className="mb-8 flex items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-semibold tracking-tight">Create account</h1>
@@ -47,8 +76,7 @@ async function handleSubmit (event) {
               <NavLink
                 to="/login"
                 className={({ isActive }) =>
-                  `rounded-full px-4 py-2 text-sm font-medium transition ${
-                    isActive ? 'bg-slate-700 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                  `rounded-full px-4 py-2 text-sm font-medium transition ${isActive ? 'bg-slate-700 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                   }`
                 }
               >
@@ -57,8 +85,7 @@ async function handleSubmit (event) {
               <NavLink
                 to="/register"
                 className={({ isActive }) =>
-                  `rounded-full px-4 py-2 text-sm font-medium transition ${
-                    isActive ? 'bg-slate-700 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                  `rounded-full px-4 py-2 text-sm font-medium transition ${isActive ? 'bg-slate-700 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                   }`
                 }
               >

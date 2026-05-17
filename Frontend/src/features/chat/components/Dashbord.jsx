@@ -24,9 +24,7 @@ function Dashboard() {
   const [selectedModel, setSelectedModel] = useState('gemini')
   const [showIncognitoLeave, setShowIncognitoLeave] = useState(false)
 
-  // Store the action to execute after incognito leave confirmation
   const pendingActionRef = useRef(null)
-  // Always track the latest currentchatid so confirm handler never has a stale value
   const currentChatIdRef = useRef(currentchatid)
   currentChatIdRef.current = currentchatid
 
@@ -34,27 +32,22 @@ function Dashboard() {
   const { handleLogout, handleDeleteAccount } = useauth()
   const navigate = useNavigate()
 
-  // Check if we should intercept navigation (incognito ON + active chat)
   const shouldInterceptNavigation = () => {
     return incognito && currentchatid !== null
   }
 
-  // Show incognito leave popup and queue the action for after confirmation
   const interceptWithIncognitoPopup = (action) => {
     pendingActionRef.current = action
     setShowIncognitoLeave(true)
   }
 
-  // On confirm: delete incognito chat, leave incognito, execute queued action
   const handleIncognitoLeaveConfirm = () => {
     setShowIncognitoLeave(false)
     const chatToDelete = currentChatIdRef.current
 
-    // Remove from Redux immediately
     if (chatToDelete) {
       dispatch(removeChat(chatToDelete))
       dispatch(setcurrentchatid(null))
-      // Fire-and-forget API delete, then reload chats to guarantee clean state
       handledeletechat({ chatid: chatToDelete })
         .then(() => handleloadchats())
         .catch(err => console.error('Failed to delete incognito chat:', err))
@@ -62,7 +55,6 @@ function Dashboard() {
 
     setIncognito(false)
 
-    // Execute the pending action
     if (pendingActionRef.current) {
       pendingActionRef.current()
       pendingActionRef.current = null
@@ -74,14 +66,11 @@ function Dashboard() {
     pendingActionRef.current = null
   }
 
-  // Toggle incognito on/off
   const handleToggleIncognito = () => {
     if (incognito) {
       if (currentchatid) {
-        // Has active chat — show leave popup
         interceptWithIncognitoPopup(null)
       } else {
-        // No active chat — just turn off
         setIncognito(false)
       }
     } else {

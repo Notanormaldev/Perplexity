@@ -351,6 +351,12 @@ export async function verifyemail(req,res){
 
     await user.save()
 
+    const loginToken = jwt.sign({
+      id: user._id,
+      username: user.username
+    }, process.env.JWT)
+
+    res.cookie('token', loginToken)
 
     const html =  `<!DOCTYPE html>
 <html lang="en">
@@ -701,7 +707,7 @@ export async function verifyemail(req,res){
       </p>
 
       <div class="btn-wrap">
-        <a href="http://localhost:5173/login" class="btn">Enter Platform →</a>
+        <a href="http://localhost:5173/" class="btn">Enter Platform →</a>
       </div>
 
       <div class="info-strip">

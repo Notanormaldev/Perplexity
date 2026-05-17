@@ -9,7 +9,6 @@ export  const usechat=()=> {
   const currentchatid = useSelector(state=>state.chat.currentchatid)
   const dispatch = useDispatch()
 
-  // ✅ Handle rate limit and AI errors
   const handleRateLimitError = (error) => {
     if (error.response?.status === 429) {
       return {
@@ -43,7 +42,6 @@ export  const usechat=()=> {
         return
       }
 
-      // Create new chat if it doesn't exist
       if (!chats[chat._id]) {
         dispatch(createNewChat({
           chatid: chat._id,
@@ -51,7 +49,6 @@ export  const usechat=()=> {
         }))
       }
       
-      // Add user message with file metadata if file exists
       const isImage = file?.type.startsWith('image/')
       const isPdf = file?.type === 'application/pdf'
       const fileType = file ? (isImage ? 'image' : isPdf ? 'pdf' : 'document') : undefined
@@ -67,7 +64,6 @@ export  const usechat=()=> {
         file: file?.name
       }))
       
-      // Add AI message
       dispatch(addNewmessage({
         chatid: chat._id,
         content: aimessage.content,
@@ -88,7 +84,6 @@ export  const usechat=()=> {
      } catch (error) {
       console.error('Error in handlegenraterespons:', error)
       
-      // Check for rate limit error
       const rateLimitError = handleRateLimitError(error)
       if (rateLimitError) {
         onRateLimit?.(rateLimitError)
@@ -134,14 +129,12 @@ export  const usechat=()=> {
    async function handleloadmessages({chatid}){
      try {
        const data = await getmessages({chatid})
-       // data.messages is an array of {content, role, fileType, file}
-       const messages = data.messages.map(msg => ({
+        const messages = data.messages.map(msg => ({
          content: msg.content,
          role: msg.role,
          fileType: msg.fileType,
          file: msg.file
        }))
-       // Update the chat with messages
        dispatch(setchats({
          ...chats,
          [chatid]: {
@@ -173,7 +166,6 @@ export  const usechat=()=> {
        let activeChatId = currentchatid
 
        if(!activeChatId){
-         // Create new chat with file
          const message = isImage ? 'Describe this image' : 'Upload document'
          const data = await genrateresponse({message, chatid: null, model, file})
          
@@ -182,7 +174,6 @@ export  const usechat=()=> {
              dispatch(createNewChat({chatid: data.chat._id, title: data.chat.title}))
            }
            
-           // Show file metadata in user message
            const fileLabel = isImage ? 'Image' : isPdf ? 'PDF' : 'Document'
            const fileType = isImage ? 'image' : isPdf ? 'pdf' : 'document'
            const userContent = `${message}\n[${fileLabel} sent: ${file.name}]`
@@ -195,7 +186,6 @@ export  const usechat=()=> {
          return
        }
 
-       // Send with existing chat
        const message = isImage ? 'Describe this image' : 'Upload document'
        const data = await genrateresponse({message, chatid: activeChatId, model, file})
        
@@ -220,7 +210,6 @@ export  const usechat=()=> {
      } catch (error) {
        console.error('Error uploading file:', error)
        
-       // Check for rate limit error
        const rateLimitError = handleRateLimitError(error)
        if (rateLimitError) {
          onRateLimit?.(rateLimitError)

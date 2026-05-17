@@ -403,7 +403,9 @@ const WelcomeScreen = ({ onSendMessage, incognito, onToggleIncognito, selectedMo
         {/* Incognito toggle */}
         <button onClick={onToggleIncognito}
           title={incognito?'Incognito ON':'Enable Incognito'}
-          style={{width:34,height:34,borderRadius:9,border:incognito?'1px solid rgba(255,255,255,0.14)':'1px solid rgba(255,255,255,0.06)',background:incognito?'rgba(255,255,255,0.08)':'transparent',color:incognito?'#d4d4d8':'#3f3f46',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',transition:'all .2s'}}
+          style={ {    position: 'absolute',
+    top: 14,                
+    right: 14, width:34,height:34,borderRadius:9,border:incognito?'1px solid rgba(255,255,255,0.14)':'1px solid rgba(255,255,255,0.06)',background:incognito?'rgba(255,255,255,0.08)':'transparent',color:incognito?'#d4d4d8':'#3f3f46',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',transition:'all .2s'}}
           onMouseEnter={e=>{if(!incognito){e.currentTarget.style.background='rgba(255,255,255,0.05)';e.currentTarget.style.color='#71717a'}}}
           onMouseLeave={e=>{if(!incognito){e.currentTarget.style.background='transparent';e.currentTarget.style.color='#3f3f46'}}}>
           <i className="ri-spy-line" style={{fontSize:15}}/>
@@ -411,7 +413,7 @@ const WelcomeScreen = ({ onSendMessage, incognito, onToggleIncognito, selectedMo
       </div>
 
       <div className="welcome-center" style={{display:'flex',flexDirection:'column',alignItems:'center',marginBottom:20,textAlign:'center',marginTop:'13rem'}}>
-        <h1 className="welcome-title" style={{fontSize:70,fontWeight:200,color:'#ececec',letterSpacing:'-.02em',marginTop:10,marginBottom:2}}>ZErio AI</h1>
+        <h1 className="welcome-title" style={{fontSize:70,fontWeight:200,color:'#ececec',letterSpacing:'-.02em',marginTop:25,marginBottom:2}}>ZErio AI</h1>
         <p className="welcome-subtitle" style={{color:'#3f3f46',fontSize:13}}>Smart answers, instantly</p>
         {incognito && (
           <div style={{display:'flex',alignItems:'center',gap:5,marginTop:8,padding:'4px 10px',borderRadius:20,background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.06)'}}>
