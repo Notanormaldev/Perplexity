@@ -315,7 +315,7 @@ html: `<!DOCTYPE html>
 
 </body>
 </html>`
-    })
+    }).catch(err => console.log("Email error:", err))
 
     res.status(200).json({
         msg:"created sucessfully",
