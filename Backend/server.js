@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import app from "./src/app.js";
-import { sendEmail } from "../services/mail.service.js"
 import conntectDB from './src/config/database.js';
 import http from 'http';
 import { initsocket } from './src/sockets/server.socket.js';
@@ -14,6 +13,6 @@ initsocket(httpserver)
 // testai()
 conntectDB()
 httpserver.listen(3000,()=>{
-    console.log('3000 port pe conntected');
+    console.log(' port  conntected');
     
 })
