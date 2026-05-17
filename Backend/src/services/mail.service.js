@@ -40,28 +40,34 @@
 //     // console.log('email sent',dts);
     
 // }
-const client = new Brevo.TransactionalEmailsApi();
-import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys, SendSmtpEmail } from "@getbrevo/brevo";
 
-const client = new TransactionalEmailsApi();
-client.setApiKey(
-  TransactionalEmailsApiApiKeys.apiKey,
-  process.env.BREVO_API_KEY
-);
+import SibApiV3Sdk from "sib-api-v3-sdk";
 
+// Setup
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+defaultClient.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
 
-client.getAccount()
+const client = new SibApiV3Sdk.TransactionalEmailsApi();
+
+// Verify
+client.sendTransacEmail({ 
+  sender: { email: process.env.EMAIL }, 
+  to: [{ email: process.env.EMAIL }], 
+  subject: "test", 
+  textContent: "test" 
+})
   .then(() => console.log("Email server is ready to send messages"))
-  .catch((error) => console.error("Error connecting to email server:", error));
+  .catch((e) => console.error("Error connecting to email server:", e.message));
 
+// Same function
 export async function sendEmail({ to, html, subject, text }) {
-  const mailOptions = new SendSmtpEmail();
-  
-  mailOptions.sender = { email: process.env.EMAIL };
-  mailOptions.to = [{ email: to }];
-  mailOptions.subject = subject;
-  mailOptions.htmlContent = html;
-  mailOptions.textContent = text;
+  const mailOptions = {
+    sender: { email: process.env.EMAIL },
+    to: [{ email: to }],
+    subject,
+    htmlContent: html,
+    textContent: text,
+  };
 
   const dts = await client.sendTransacEmail(mailOptions);
   return dts;
