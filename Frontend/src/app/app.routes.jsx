@@ -3,7 +3,7 @@ import Register from "../features/auth/pages/Register"
 import Login from "../features/auth/pages/login"
 
 import Protected from "../features/auth/components/Protected"
-import Dashboard from "../features/chat/components/dashbord"
+import Dashboard from "../features/chat/components/Dashbord.jsx"
 
 export const router = createBrowserRouter([
   {
