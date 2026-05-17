@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import './style/Bg.css';
+import './style/bg.css';
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const P = {
