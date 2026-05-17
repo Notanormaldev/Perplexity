@@ -12,6 +12,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@getbrevo/brevo": "^5.0.4",
     "@google/generative-ai": "^0.24.1",
     "@langchain/cohere": "^1.0.5",
     "@langchain/community": "^1.1.28",
