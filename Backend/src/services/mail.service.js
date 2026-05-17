@@ -51,7 +51,10 @@ const client = new SibApiV3Sdk.TransactionalEmailsApi();
 
 // Verify
 client.sendTransacEmail({ 
-  sender: { email: process.env.EMAIL }, 
+  sender: { 
+  email: process.env.EMAIL,
+  name: "Zerio AI"  
+}, 
   to: [{ email: process.env.EMAIL }], 
   subject: "test", 
   textContent: "test" 
