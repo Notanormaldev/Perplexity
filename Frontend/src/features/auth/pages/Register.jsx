@@ -28,7 +28,7 @@ function Register() {
       setTimeout(() => {
         setShowToast(false)
         navigate('/login')
-      }, 4000)
+      }, 3000)
     }
   }
 
