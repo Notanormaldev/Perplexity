@@ -190,7 +190,7 @@ html: `<!DOCTYPE html>
                   <table cellpadding="0" cellspacing="0" style="margin-bottom:44px;">
                     <tr>
                       <td>
-                        <a href="http://localhost:3000/api/auth/verify-email?token=${emailverifytoken}"
+                        <a href="https://zerio-ai-backend.onrender.com/api/auth/verify-email?token=${emailverifytoken}"
                           style="
                             display:inline-block;
                             padding:16px 40px;

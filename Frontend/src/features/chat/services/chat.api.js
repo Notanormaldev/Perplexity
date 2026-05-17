@@ -2,7 +2,7 @@ import axios  from "axios";
 
 
 const api =axios.create({
-    baseURL:'http://localhost:3000',
+    baseURL:'https://zerio-ai-backend.onrender.com',
     withCredentials:true
 })
 
@@ -115,7 +115,7 @@ export async function describeImageStream({file, chatid, message, onChunk}) {
         data.append('file', file)
         if (message) data.append('message', message)
 
-        const res = await fetch(`http://localhost:3000/api/chats/image/describe/stream/${chatid}`, {
+        const res = await fetch(`https://zerio-ai-backend.onrender.com/api/chats/image/describe/stream/${chatid}`, {
             method: 'POST',
             body: data,
             credentials: 'include'

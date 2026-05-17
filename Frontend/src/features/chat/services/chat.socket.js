@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 
 
 export const intializesocketconnection=()=>{
-    const socket =io('http://localhost:3000',{
+    const socket =io('https://zerio-ai-backend.onrender.com',{
 
         withCredentials:true
     }
