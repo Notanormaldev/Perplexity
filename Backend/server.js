@@ -11,8 +11,11 @@ initsocket(httpserver)
 
 // import { testai } from './src/services/Ai.service.js';
 // testai()
+
 conntectDB()
-httpserver.listen(3000,()=>{
+const PORT = process.env.PORT || 3000;
+
+httpserver.listen(PORT,()=>{
     console.log(' port  conntected');
     
 })
