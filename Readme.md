@@ -1,8 +1,6 @@
 <div align="center">
 
 
-<br/>
-<br/>
 
 # ⚡ ZErio AI
 
