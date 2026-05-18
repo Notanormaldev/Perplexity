@@ -1,4 +1,18 @@
 import React, { useState } from 'react'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { Navigate, NavLink, useNavigate } from 'react-router-dom'
 import { useauth } from '../hook/useauth'
 import { useSelector } from 'react-redux'
@@ -38,7 +52,7 @@ function Login() {
        <h1 className='text-white absolute left-1 top-1 font-light font-stretch-50% text-3xl mask-b-from-neutral-50 '><i  class="ri-ancient-gate-line"></i>  ZErio Ai</h1>
       <div className="w-full max-w-md">
         <div className="rounded-[32px] border border-slate-800 bg-black-900/95 p-8 shadow-2xl shadow-slate-950/30 backdrop-blur-xl">
-       <div className='font-extrabold font-stretch-50% text-4xl  mask-b-from-neutral-50 w-[10%] m-auto'>
+       <div className='font-extrabold font-stretch-50% text-3xl sm:text-4xl mask-b-from-neutral-50 w-12 sm:w-16 m-auto mb-4'>
          <i class="ri-ancient-gate-line"></i> 
        </div>
           <div className="mb-8 flex items-center justify-between gap-4">

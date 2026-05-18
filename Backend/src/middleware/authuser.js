@@ -9,7 +9,7 @@ export async function authuser(req,res,next){
        
 
         if(!token){
-            return res.status(404).json({
+            return res.status(401).json({
                 msg:"empty token",
                 sucess:false
             })
@@ -18,7 +18,7 @@ export async function authuser(req,res,next){
         const istokenblacklisted = await redis.get(token)
 
         if(istokenblacklisted){
-            return res.status(200).json({
+            return res.status(201).json({
                 msg:"already logout"
             })
         }

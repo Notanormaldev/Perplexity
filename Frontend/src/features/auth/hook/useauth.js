@@ -35,10 +35,10 @@ export function useauth() {
 async function handlegetme() {
     try {
       dispatch(setloading(true))
-      const data = await getme()
-      console.log(" getme success:", data)
+      const data = await getme()   
       dispatch(setuser(data.user))
     } catch (error) {
+      dispatch(setuser(null))
       console.log("❌ getme failed:", error.response?.status, error.response?.data)
       dispatch(setloading(false))  
     } finally {
