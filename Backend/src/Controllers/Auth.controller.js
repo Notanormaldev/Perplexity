@@ -352,6 +352,12 @@ export async function verifyemail(req,res){
 
     await user.save()
 
+   res.clearCookie('token', {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'none'
+});
+
     const loginToken = jwt.sign({
       id: user._id,
       username: user.username
@@ -829,7 +835,12 @@ export async function logout(req,res){
   res.clearCookie('token');
   await redis.set(token,Date.now().toString(),'EX',3600)
 
-
+   res.clearCookie('token', {
+    httpOnly: true,
+    secure: true,        
+    sameSite: 'none',    
+    path: '/'            
+  });
   return res.status(200).json({
     msg:"logout sucessfully"
   })
