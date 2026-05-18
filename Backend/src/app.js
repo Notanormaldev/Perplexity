@@ -4,7 +4,7 @@ import UserRoute from './Routes/user.route.js'
 import morgan from 'morgan'
 import cors from 'cors'
 import chatRouter from './Routes/chat.route.js'
-import path from 'path'
+
 const app = express()
 app.use(cors({
     origin:"https://zerio-ai.onrender.com",
