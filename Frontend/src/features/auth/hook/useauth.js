@@ -35,6 +35,7 @@ export function useauth() {
   async function handlegetme() {
     try {
       dispatch(setloading(true))
+       console.log("getme data:", data)  
       const data = await getme()
       dispatch(setuser(data.user))
     } catch (error) {

@@ -20,7 +20,7 @@ chatRouter.patch('/pin/:chatid', authuser, togglePinChat)
 chatRouter.post('/upload/:chatid', authuser, upload.single('file'), uploadDocument)
 chatRouter.post("/image/describe/:chatid", authuser, upload.single("file"), imageController)
 
-// ✅ Streaming image description route
+//  Streaming image description route
 chatRouter.post('/image/describe/stream/:chatid', authuser, upload.single('file'), async (req, res) => {
   try {
     const { chatid } = req.params
@@ -75,7 +75,7 @@ chatRouter.post('/image/describe/stream/:chatid', authuser, upload.single('file'
 })
 
 
-// ✅ Streaming route — add karo existing routes ke saath
+//  Streaming route — add karo existing routes ke saath
 chatRouter.post('/message/stream', authuser, upload.single('file'), async (req, res) => {
   try {
     const { message, chatid, model = "gemini" } = req.body
