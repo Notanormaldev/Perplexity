@@ -14,7 +14,7 @@ app.use(cors({
 }))
 
 app.use(express.json())
-app.use(express.static('./public'))
+// app.use(express.static('./public'))
 app.use(cookie())
 app.use(morgan('dev'))
 
@@ -23,9 +23,9 @@ app.use(morgan('dev'))
 app.use('/api/auth',UserRoute)
 app.use('/api/chats',chatRouter)
 
-app.use('*name',(req,res)=>{
-    res.sendFile(path.join(__dirname , ".." , './public/index.html'))
+// app.use('*name',(req,res)=>{
+//     res.sendFile(path.join(__dirname , ".." , './public/index.html'))
 
-})
+// })
 
 export default app;
