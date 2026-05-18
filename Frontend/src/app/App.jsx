@@ -7,9 +7,11 @@ import { useauth } from '../features/auth/hook/useauth'
 function App() {
   const auth = useauth()
 
-  useEffect(()=>{
-auth.handlegetme()
-  },[])
+useEffect(() => {
+  setTimeout(() => {
+    auth.handlegetme()
+  }, 500) 
+}, [])
   return (
     <div>
       <RouterProvider router={router}/>
