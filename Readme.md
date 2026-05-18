@@ -13,7 +13,7 @@
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-zerio--ai.onrender.com-black?style=for-the-badge)](https://zerio-ai.onrender.com)
 [![GitHub](https://img.shields.io/badge/GitHub-Notanormaldev-181717?style=for-the-badge&logo=github)](https://github.com/Notanormaldev)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Harsh_Patel-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/harsh-patel-a77148314/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-99.1%25-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://github.com/Notanormaldev/ZErio-Ai)
+[![JavaScript](https://img.shields.io/badge/JavaScript-99.4%25-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://github.com/Notanormaldev/ZErio-Ai)
 
 </div>
 
