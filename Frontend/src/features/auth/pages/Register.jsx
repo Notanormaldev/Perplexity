@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 function Register() {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' })
   const [showToast, setShowToast] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { user, loading, error } = useSelector(state => state.auth)
 
@@ -20,7 +21,10 @@ function Register() {
   
   async function handleSubmit(event) {
     event.preventDefault()
+    if (isSubmitting || loading) return;
+    setIsSubmitting(true);
     const res = await handleregister({ email: formData.email, username: formData.username, password: formData.password })
+    setIsSubmitting(false);
     
     // Only show toast and navigate if successful
     if (res) {
@@ -136,9 +140,10 @@ function Register() {
 
             <button
               type="submit"
-              className="w-full rounded-3xl bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white"
+              disabled={isSubmitting || loading}
+              className={`w-full rounded-3xl px-5 py-3 text-sm font-semibold transition ${isSubmitting || loading ? 'bg-slate-300 text-slate-600 cursor-not-allowed' : 'bg-slate-100 text-slate-950 hover:bg-white'}`}
             >
-              Register
+              {isSubmitting || loading ? 'Registering...' : 'Register'}
             </button>
           </form>
 

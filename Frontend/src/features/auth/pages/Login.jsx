@@ -20,6 +20,7 @@ import Background from '../components/Background'
 
 function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' })
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const {user,loading} = useSelector(state=>state.auth)
 
  
@@ -33,12 +34,11 @@ function Login() {
   const {handlelogin}=useauth()
   async function handleSubmit(event) {
     event.preventDefault()
-  await handlelogin(formData)
-  navigate('/')
-
-
-   
-  
+    if (isSubmitting || loading) return;
+    setIsSubmitting(true);
+    await handlelogin(formData)
+    setIsSubmitting(false);
+    navigate('/')
   }
   if(user && !loading ){
   return  <Navigate to='/'/>
@@ -113,9 +113,10 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full rounded-3xl bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white"
+              disabled={isSubmitting || loading}
+              className={`w-full rounded-3xl px-5 py-3 text-sm font-semibold transition ${isSubmitting || loading ? 'bg-slate-300 text-slate-600 cursor-not-allowed' : 'bg-slate-100 text-slate-950 hover:bg-white'}`}
             >
-              Login
+              {isSubmitting || loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
 
